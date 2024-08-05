@@ -1,62 +1,87 @@
-import { Pressable, StyleSheet,FlatList } from 'react-native';
-
-
+import { Pressable, StyleSheet, FlatList, RefreshControl, View, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from '@/components/Themed';
-import axios, { formToJSON } from 'axios';
 import SimpleCard from '@/components/PuntenCard';
+import { pointsDict, getSchoolware } from '@/components/schoolware';
+import { useColorScheme } from '@/components/useColorScheme.web';
+import Toast from 'react-native-root-toast';
+import { useRouter } from 'expo-router';
+import { ActivityIndicator, MD2Colors, Text } from 'react-native-paper';
 
-interface CardData {
-  DW: string;
-  EX: string;
-  cat: string;
-  datum: string;
-  day: string;
-  gew_sc: number;
-  pub_datum: string;
-  score: number;
-  soort: string;
-  titel: string;
-  tot_sc: number;
-  vak: string;
-}
+
 
 export default function puntenScreen() {
-  const [data, setData] = useState<CardData[]>([]);
+  const router = useRouter();
+
+  const colorScheme = useColorScheme();
+  const [data, setData] = useState<pointsDict[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [openSettings, setopenSettings] = useState(false);
+
+  const loadPunten = async () => {
+    setLoading(true);
+
+    const schoolware = await getSchoolware();
+    if (!schoolware.valid) {
+      let toast = Toast.show('No saved info found, please go to settings', {
+        duration: Toast.durations.LONG,
+      });
+      //router.replace('/settings');
+      setLoading(false)
+      setopenSettings(true)
+
+    } else {
+      console.log("Schoolware valid")
+    }
+    if (schoolware.valid) {
+      console.log("logging in")
+      schoolware.login().then(() => {
+        schoolware.getPunten().then((res) => setData(res));
+        setLoading(false);
+      })
+    }
+  }
+  var web = false
+  if(Platform.OS === 'web')
+    web = true
 
   useEffect(() => {
-    // Fetch data from your API
-    axios.get('http://192.168.0.38:7964/punten_api')
-      .then(response => {
-        setData(response.data);
-        console.log(response)
-        
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    loadPunten()
   }, []);
 
-  const renderItem = ({ item }: { item: CardData }) => (
-    
+  const renderItem = ({ item }: { item: pointsDict }) => (
     <View>
-      <SimpleCard DW={''} EX={''} cat={''} datum={''} day={''} gew_sc={0} pub_datum={''} score={0} soort={''} titel={item.titel} tot_sc={0} vak={''}>
-
-      </SimpleCard>
-        
-        
+      <SimpleCard vak={item.vak} title={item.title} comment={item.comment} scoreFloat={item.scoreFloat} scoreTotal={item.scoreTotal} dw={item.dw} date={item.date} type={item.type}></SimpleCard>
     </View>
   );
 
   return (
-
     <View style={styles.container}>
-      <Text>DATA:</Text>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-      />
-      <Text>DATA:</Text>
+      {loading ? (
+        // show a loading indicator
+        <View>
+          <Text>Loading...</Text>
+          <ActivityIndicator animating={true} color={MD2Colors.blue800} size="large" style={styles.loading} />
+        </View>
+
+      ) : openSettings ? (
+
+        <View>
+          <Text>Open settings to enter credentials</Text>
+        </View>
+
+      ) : data.length === 0 ? (
+        // show a message if the data is empty
+        <Text>No points available</Text>
+      ) : (
+        // render your FlatList
+        <FlatList style={web ? [styles.list] : [styles.list, {width: "90%"}]}
+          data={data}
+          renderItem={({ item }) => renderItem({ item })}
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={loadPunten} />
+          }
+        />
+      )}
     </View>
   );
 }
@@ -66,27 +91,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 0,
+    backgroundColor: "rgb(25, 25, 25)"
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  list: {
+    width: "80%",
+    maxWidth: 1200,
+    marginHorizontal: 'auto',
+    marginTop: 0,
+    marginBottom: 0,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-  button: {
-    borderRadius: 10,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  buttonLabel: {
-    color: '#fff',
-    fontSize: 16,
-  },
+  loading: {
+    marginTop: 20
+  }
 });
-

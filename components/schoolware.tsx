@@ -1,0 +1,135 @@
+import axios, { AxiosResponse } from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from "react-native-root-toast";
+
+export type tasksDict = {
+    vak: string,
+    title: string,
+    type: string,
+    comment: string,
+    deadline: Date
+}
+
+export type pointsDict = {
+    vak: string,
+    title: string,
+    comment: string,
+    scoreFloat: number,
+    scoreTotal: number,
+    dw: string,
+    date: Date,
+    type: string
+}
+
+export type agendaDict = {
+    vak: String,
+    room: String,
+    title: String,
+    comment: String,
+    date: Date,
+    period: number
+}
+
+export class Schoolware {
+    username: string;
+    password: string;
+    token: string;
+    domain: string;
+    server: URL
+    microsoft: boolean;
+    valid: boolean
+
+    constructor(username: string, password: string, domain: string, server: URL = new URL("http://192.168.0.111:3000"), valid = false, accountType: string) {
+        this.username = username;
+        this.password = password;
+        this.token = "";
+        this.domain = domain;
+        this.server = server;
+        this.valid = valid
+        this.microsoft = accountType == "microsoft" ? true : false
+    }
+
+    async login() {
+        let response = await axios({
+            method: "post",
+            url: this.microsoft ? this.server.toString() + "token/microsoft" : this.server.toString() + "token/schoolware",
+            data: {
+                username: this.username,
+                password: this.password
+            }
+        });
+        this.token = response.data.token;
+        let success = response.data.success;
+        if (!success) {
+            console.log(response);
+            /*let toast = Toast.show('Bad login info, check username and password', {
+                duration: Toast.durations.LONG,
+              });*/
+            this.valid = false;
+        } else {
+        this.valid = true;
+        }
+
+    }
+
+    private async makeRequest(path: string) {
+        let response = await axios({
+            method: "post",
+            url: `${this.server.toString()}${path}`,
+            data: { "token": this.token }
+        })
+        return response.data;
+    }
+
+    async checkToken(): Promise<boolean> {
+        let response = await this.makeRequest("main/check");
+        return response.succes
+    }
+
+    async checkAndRequest(path: string) {
+        if(this.checkToken()){
+            return this.makeRequest(path);
+        } else{
+            console.log("needs to relogin");
+            this.login();
+            return this.makeRequest(path);
+        }
+
+    }
+
+    async getPunten(): Promise<pointsDict[]> {
+        return await this.checkAndRequest("main/points");
+    }
+}
+
+var schoolware = new Schoolware("", "", "", undefined, false, "");
+
+(async () => {
+    getSchoolware();
+})();
+
+export async function getSchoolware() {
+    try {
+        const username = await AsyncStorage.getItem('username');
+        const password = await AsyncStorage.getItem('password');
+        const domain = await AsyncStorage.getItem('domain');
+        const accountType = await AsyncStorage.getItem('accountType');
+        if (username !== null && password !== null && domain !== null) {
+            var savedUsername = username
+            var savedPassword = password
+            var savedDomain = domain
+            var savedAccountType = accountType;
+
+
+            schoolware = new Schoolware(savedUsername, savedPassword, savedDomain, undefined, true, accountType);
+        }
+        else {
+            console.log("no saved login info")
+        }
+    } catch (e) {
+        // error reading value
+        console.log(e)
+    }
+    return schoolware
+}
+//export const schoolware = new Schoolware("maarten2007@hotmail.be","1A!nieuw", "kov.schoolware.be");
