@@ -29,10 +29,18 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}>
       <Tabs.Screen
-        name="index"
+        name="points"
         options={{
           title: 'punten',
           tabBarIcon: ({ color }) => <Entypo name="bar-graph" size={24} color={color} />,
+  
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'agenda',
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/settings" asChild>
               <Pressable>
@@ -52,13 +60,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="tasks"
         options={{
           title: 'taken',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
+
     </Tabs>
+    
   );
 }
 

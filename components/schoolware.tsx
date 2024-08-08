@@ -59,6 +59,7 @@ export class Schoolware {
             }
         });
         this.token = response.data.token;
+        AsyncStorage.setItem('token', this.token);
         let success = response.data.success;
         if (!success) {
             console.log(response);
@@ -67,12 +68,21 @@ export class Schoolware {
               });*/
             this.valid = false;
         } else {
-        this.valid = true;
+            this.valid = true;
         }
 
     }
 
     private async makeRequest(path: string) {
+        try{
+            const token = await AsyncStorage.getItem('token');
+            if(token != null){
+                this.token = token;
+            } else {
+                console.log("no saved token");
+            }
+        } catch(e){
+        }
         let response = await axios({
             method: "post",
             url: `${this.server.toString()}${path}`,
@@ -83,22 +93,32 @@ export class Schoolware {
 
     async checkToken(): Promise<boolean> {
         let response = await this.makeRequest("main/check");
+        console.log(response.succes)
         return response.succes
     }
 
     async checkAndRequest(path: string) {
-        if(this.checkToken()){
-            return this.makeRequest(path);
-        } else{
+        console.log("checking token")
+        const succes: boolean = await this.checkToken()
+        if (succes) {
+            console.log("token valid")
+            return await this.makeRequest(path);
+        } else {
             console.log("needs to relogin");
-            this.login();
-            return this.makeRequest(path);
+            await this.login();
+            return await this.makeRequest(path);
         }
 
     }
 
     async getPunten(): Promise<pointsDict[]> {
         return await this.checkAndRequest("main/points");
+    }
+    async getTasks(): Promise<tasksDict[]> {
+        return await this.checkAndRequest("main/tasks");
+    }
+    async getAgenda(): Promise<agendaDict[]> {
+        return await this.checkAndRequest("main/agenda");
     }
 }
 
@@ -118,8 +138,6 @@ export async function getSchoolware() {
             var savedUsername = username
             var savedPassword = password
             var savedDomain = domain
-            var savedAccountType = accountType;
-
 
             schoolware = new Schoolware(savedUsername, savedPassword, savedDomain, undefined, true, accountType);
         }
@@ -127,9 +145,8 @@ export async function getSchoolware() {
             console.log("no saved login info")
         }
     } catch (e) {
-        // error reading value
         console.log(e)
     }
     return schoolware
 }
-//export const schoolware = new Schoolware("maarten2007@hotmail.be","1A!nieuw", "kov.schoolware.be");
+
