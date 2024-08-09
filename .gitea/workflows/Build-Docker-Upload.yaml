@@ -37,4 +37,4 @@ jobs:
           platforms: |
             linux/amd64                                                
           push: true
-          tags: registry.mb-server.com/schoolware-frontend:latest
+          tags: git.mb-server.com/mb/schoolware-frontend:latest
