@@ -23,10 +23,26 @@ jobs:
         with:
           node-version: 21
           cache: 'npm'
+      
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+      
+      - uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-     
 
-      - name: install and export
+      - if: steps.npm-cache.outputs.cache-hit != 'true'
+        name: Install dependencies if no cache
+        run: npm ci
+
+      - name: export
         run: |
-          npm ci
           npx expo export --platform web
       
       - name: Login to gitea Container Registry
@@ -44,4 +60,4 @@ jobs:
           platforms: |
             linux/amd64                                                
           push: true
-          tags: git.mb-server.com/mb/schoolware-frontend:latest
+          tags: git.mb-server.com/schoolware-nextgen/schoolware-frontend:latest
