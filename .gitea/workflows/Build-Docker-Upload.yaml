@@ -28,6 +28,13 @@ jobs:
         run: |
           npm ci
           npx expo export --platform web
+      
+      - name: Login to gitea Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: git.mb-server.com
+          username: mb
+          password: ${{ secrets.DOCKER_TOKEN_MORE  }}
         
       - name: Build and push
         uses: docker/build-push-action@v4
@@ -38,5 +45,3 @@ jobs:
             linux/amd64                                                
           push: true
           tags: git.mb-server.com/mb/schoolware-frontend:latest
-          username: mb
-          password: ${{ secrets.DOCKER_TOKEN }}
