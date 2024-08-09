@@ -28,6 +28,7 @@ jobs:
         run: |
           npm config set fetch-retries 4
           npm config set fetch-retry-mintimeout 100000
+          npm config set fetch-retry-maxtimeout 600000
           npm i
           npx expo export --platform web
         
