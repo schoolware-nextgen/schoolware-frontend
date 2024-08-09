@@ -43,6 +43,7 @@ jobs:
 
       - name: export
         run: |
+          npm i expo
           npx expo export --platform web
       
       - name: Login to gitea Container Registry
