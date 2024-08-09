@@ -26,6 +26,8 @@ jobs:
 
       - name: install and export
         run: |
+          ping google.com
+          curl http://google.com
           npm config set fetch-retries 4
           npm config set fetch-retry-mintimeout 100000
           npm config set fetch-retry-maxtimeout 600000
