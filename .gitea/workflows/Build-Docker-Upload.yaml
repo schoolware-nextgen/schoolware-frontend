@@ -26,9 +26,6 @@ jobs:
 
       - name: install and export
         run: |
-          apt update
-          apt install iputils-ping
-          ping google.com
           npm config set fetch-retries 4
           npm config set fetch-retry-mintimeout 100000
           npm config set fetch-retry-maxtimeout 600000
