@@ -38,4 +38,5 @@ jobs:
             linux/amd64                                                
           push: true
           tags: git.mb-server.com/mb/schoolware-frontend:latest
+          username: mb
           password: ${{ secrets.DOCKER_TOKEN }}
