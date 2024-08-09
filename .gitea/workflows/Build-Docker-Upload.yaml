@@ -41,9 +41,12 @@ jobs:
         name: Install dependencies if no cache
         run: npm ci
 
+      - if: steps.npm-cache.outputs.cache-hit == 'true'
+        name: Install dependencies if no cache
+        run: npm i
+
       - name: export
         run: |
-          npm i expo
           npx expo export --platform web
       
       - name: Login to gitea Container Registry
