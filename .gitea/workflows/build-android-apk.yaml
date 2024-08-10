@@ -11,4 +11,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - run: ls /android
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 21
+          cache: 'npm'
+      
+      - uses: actions/cache@v3
+        id: android-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: 
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-    
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build
+        run: |
+          apt update
+          apt install openjdk-21-jdk
+          npx expo prebuild -p android
+          npx react-native build-android --verbose
+
+
