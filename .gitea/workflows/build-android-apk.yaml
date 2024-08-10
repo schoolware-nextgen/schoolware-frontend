@@ -6,8 +6,8 @@ jobs:
   build-image:
     runs-on: android
     container:
-    volumes:
-        - /android:/android
+      volumes:
+          - /android:/android
     steps:
       - name: Checkout
         uses: actions/checkout@v3
