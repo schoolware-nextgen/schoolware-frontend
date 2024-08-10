@@ -1,0 +1,7 @@
+
+services:
+  web:
+    image: git.mb-server.com/schoolware-nextgen/schoolware-frontend:latest
+    ports:
+    - "80:80"
+
