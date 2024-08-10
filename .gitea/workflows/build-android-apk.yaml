@@ -1,0 +1,11 @@
+name: Build image
+on:
+  push:
+    tags: android
+jobs:
+  build-image:
+    runs-on: android
+  steps:
+    - uses: actions/checkout@v2
+
+    - run: ls /android

@@ -73,6 +73,7 @@ export class Schoolware {
 
     }
 
+    
     private async makeRequest(path: string) {
         try{
             const token = await AsyncStorage.getItem('token');
