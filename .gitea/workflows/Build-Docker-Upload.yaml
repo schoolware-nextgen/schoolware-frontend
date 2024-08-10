@@ -1,7 +1,7 @@
 name: Build image
 on:
   push:
-    tags-ignore: android
+    tags-ignore: android*
 jobs:
   build-image:
     runs-on: ubuntu-latest

@@ -1,7 +1,7 @@
 name: Build image
 on:
   push:
-    tags: android
+    tags: android*
 jobs:
   build-image:
     runs-on: android
