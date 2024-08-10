@@ -134,12 +134,18 @@ export async function getSchoolware() {
         const password = await AsyncStorage.getItem('password');
         const domain = await AsyncStorage.getItem('domain');
         const accountType = await AsyncStorage.getItem('accountType');
+        const backend = await AsyncStorage.getItem('backend');
         if (username !== null && password !== null && domain !== null) {
             var savedUsername = username
             var savedPassword = password
             var savedDomain = domain
+            if(backend == null){
+                var savedBackend = "http://backend.coolify.mb"
+            } else {
+                var savedBackend = backend;
+            }
 
-            schoolware = new Schoolware(savedUsername, savedPassword, savedDomain, undefined, true, accountType);
+            schoolware = new Schoolware(savedUsername, savedPassword, savedDomain, new URL(savedBackend), true, accountType);
         }
         else {
             console.log("no saved login info")

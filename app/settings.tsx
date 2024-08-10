@@ -31,6 +31,9 @@ export default function ModalScreen() {
 
   const [accountType, setAccountType] = React.useState('Microsoft');
 
+  var [backend, setBackend] = React.useState('http://backend.coolify.mb');
+  const [isBackendValid, setIsBackendValid] = React.useState(true);
+
   const validateUsername = (email: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -67,19 +70,24 @@ export default function ModalScreen() {
     } else { setsaveDisabled(true) }
   };
 
+  const handleAccountTypeChange = (value: string) => {
+    setAccountType(value);
+  }
+
+  const handleBackendChange = (text: string) => {
+    setBackend(text);
+    setIsBackendValid(validateDomain(text));
+  };
+
   const validateDomain = (url: string): boolean => {
     const re = /^(?!https:\/\/)(?!.*\/$)([^\s$.?#].[^\s]*)$/i;
     return re.test(url);
   };
 
-  const handleAccountTypeChange = (value: string) => {
-    setAccountType(value);
-  }
-
   async function onSubmit() {
     if (username !== "" && password !== "" && domain !== "") {
 
-      const schoolware = new Schoolware(username, password, domain, undefined, undefined, accountType);
+      const schoolware = new Schoolware(username, password, domain, new URL(backend), undefined, accountType);
       await schoolware.login()
       let succes = await schoolware.checkToken()
       if (succes) {
@@ -87,6 +95,7 @@ export default function ModalScreen() {
         AsyncStorage.setItem('password', password);
         AsyncStorage.setItem('domain', domain);
         AsyncStorage.setItem('accountType', accountType);
+        AsyncStorage.setItem('backend', backend);
         router.replace('/');
       }
       else {
@@ -110,6 +119,7 @@ export default function ModalScreen() {
     const password = await AsyncStorage.getItem('password');
     const domain = await AsyncStorage.getItem('domain');
     const accountType = await AsyncStorage.getItem('accountType');
+    const backend = await AsyncStorage.getItem('backend');
     if (username !== null && password !== null && domain !== null) {
       setUsername(username);
       setPassword(password);
@@ -121,7 +131,12 @@ export default function ModalScreen() {
       handleDomainChange(domain);
       handleAccountTypeChange(accountType);
 
-      setsaveDisabled(false)
+      setsaveDisabled(false);
+
+
+    }
+    if(backend != null){
+      setBackend(backend);
     }
 
   }
@@ -197,9 +212,23 @@ export default function ModalScreen() {
             <RadioButton.Item label="Schoolware" value="schoolware" />
             <RadioButton.Item label="Microsoft" value="microsoft" />
           </RadioButton.Group>
+        </Card.Content>
+      </Card>
 
+      <Card style={styles.card}>
+        <Card.Content>
+          <Title style={styles.title}>backend</Title>
+          <TextInput
+            style={[styles.input, !isBackendValid && styles.errorInput]}
+            placeholder="backend.coolify.mb"
+            placeholderTextColor="rgba(255, 255, 255, 0.4)"
+            value={backend}
+            onChangeText={handleBackendChange}
+            keyboardType="url"
+            autoCapitalize="none"
 
-          {!isDomainValid && <Text style={styles.errorText} >Invalid URL</Text>}
+          />
+          {!isBackendValid && <Text style={styles.errorText} >Invalid URL</Text>}
         </Card.Content>
       </Card>
 
