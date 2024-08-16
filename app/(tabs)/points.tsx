@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, FlatList, RefreshControl, View, Platform, ToastAndroid } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import AgendaCard from '@/components/AgendaCard';
-import { agendaDict, getSchoolware } from '@/components/schoolware';
+import PuntenCard from '@/components/PuntenCard';
+import { pointsDict, getSchoolware } from '@/components/schoolware';
 import { useColorScheme } from '@/components/useColorScheme.web';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
@@ -13,7 +13,7 @@ export default function puntenScreen() {
   const router = useRouter();
 
   const colorScheme = useColorScheme();
-  const [data, setData] = useState<agendaDict[]>([]);
+  const [data, setData] = useState<pointsDict[]>([]);
   const [loading, setLoading] = useState(true);
   const [openSettings, setopenSettings] = useState(false);
 
@@ -37,7 +37,7 @@ export default function puntenScreen() {
     }
     if (schoolware.valid) {
       console.log("logging in")
-        schoolware.getAgenda().then((res) => {setData(res); setLoading(false);});
+        schoolware.getPunten().then((res) => {setData(res); setLoading(false);});
         
 
     }
@@ -50,9 +50,9 @@ export default function puntenScreen() {
     loadPunten()
   }, []);
 
-  const renderItem = ({ item }: { item: agendaDict }) => (
+  const renderItem = ({ item }: { item: pointsDict }) => (
     <View>
-      <AgendaCard vak={item.vak} title={item.title} comment={item.comment} date={item.date} room={item.room} period={item.period}></AgendaCard>
+      <PuntenCard vak={item.vak} title={item.title} comment={item.comment} scoreFloat={item.scoreFloat} scoreTotal={item.scoreTotal} dw={item.dw} date={item.date} type={item.type}></PuntenCard>
     </View>
   );
 
