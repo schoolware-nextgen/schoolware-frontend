@@ -11,19 +11,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: false
 
       - uses: actions/setup-node@v4
         with:
           node-version: 21
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm i
+        run: npm i
 
       - uses: actions/setup-java@v2
         with:
@@ -33,11 +28,6 @@ jobs:
 
       - name: Build
         run: |
-          pnpm install @react-native/assets-registry
-          pnpm i expo-asset
-          pnpm i babel-preset-expo
-          pnpm i @babel/runtime
-
           ANDROID_HOME=/android/Sdk PATH=$PATH:$ANDROID_HOME/emulator PATH=$PATH:$ANDROID_HOME/platform-tools npx react-native build-android --verbose --tasks assemble
 
       - name: Upload release apk
