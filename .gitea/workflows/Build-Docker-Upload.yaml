@@ -18,27 +18,21 @@ jobs:
       - name: Set up Docker BuildX
         uses: docker/setup-buildx-action@v2
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: 8
-          run_install: false
-
       - uses: actions/setup-node@v4
         with:
           node-version: 21
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm i
+        run: npm i
 
       - name: export
         run: |
-          pnpm install @react-native/assets-registry
-          pnpm i react-native-root-siblings
-          pnpm i expo-asset
-          pnpm i babel-preset-expo
-          pnpm i @babel/runtime
+          npm install @react-native/assets-registry
+          npm i react-native-root-siblings
+          npm i expo-asset
+          npm i babel-preset-expo
+          npm i @babel/runtime
           npx expo export --platform web
       
       - name: Login to gitea Container Registry
