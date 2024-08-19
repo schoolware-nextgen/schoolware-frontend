@@ -51,10 +51,10 @@ jobs:
             linux/amd64                                                
           push: true
           tags: git.mb-server.com/schoolware-nextgen/schoolware-frontend:latest
-          
+
       - name: deploy coolify
         run: |
           curl --request GET \
-          --url 'http://192.168.0.168:8000/api/v1/deploy?uuid=i8g0k884wkcw88k0ggokokgg&force=false' \
-          --header 'Authorization: Bearer ${{ secrets.COOLIFYTOKEN   }}' \
+          --url 'http://192.168.0.168:8000/api/v1/deploy?uuid=m0cow8k0k0k0cww848sc4o4g&force=false' \
+          --header 'Authorization: Bearer ${{ secrets.COOLIFYTOKEN }}' \
           --header 'User-Agent: insomnia/9.3.2'
