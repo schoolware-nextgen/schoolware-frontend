@@ -56,15 +56,11 @@ export class Schoolware {
             url: this.microsoft ? this.server.toString() + "token/microsoft" : this.server.toString() + "token/schoolware",
             data: {
                 username: this.username,
-                password: this.password
+                password: this.password,
+                domain: this.domain
             }
         });
         this.token = response.data.token;
-        Toast.show({
-            type: 'info',
-            text1: 'setting to storage',
-          });
-
         let success = response.data.success;
         if (!success) {
             console.log(response);
