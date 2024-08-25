@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, FlatList, RefreshControl, View, Platform, ToastAndroid } from 'react-native';
+import { Pressable, StyleSheet, FlatList, RefreshControl, View, Platform, ToastAndroid, PanResponder } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AgendaCard from '@/components/AgendaCard';
 import { agendaDict, getSchoolware } from '@/components/schoolware';
@@ -8,7 +8,6 @@ import { useRouter } from 'expo-router';
 import { ActivityIndicator, MD2Colors, Text } from 'react-native-paper';
 
 
-
 export default function puntenScreen() {
   const router = useRouter();
 
@@ -16,6 +15,33 @@ export default function puntenScreen() {
   const [data, setData] = useState<agendaDict[]>([]);
   const [loading, setLoading] = useState(true);
   const [openSettings, setopenSettings] = useState(false);
+
+  const [date, setDate] = useState(new Date());
+
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderGrant: () => {},
+    onPanResponderEnd: async (evt, gestureState) => {
+      // Get the current swipe direction
+      const dx = gestureState.dx;
+      console.log(`dx: ${dx}`);
+      if (dx > 0) {
+        // Swipe right detected!
+        console.log('Swipe right detected!');
+        date.setDate(date.getDate() - 1);
+        await loadPunten();
+      }
+      if (dx < 0) {
+        // Swipe left detected!
+        console.log('Swipe left detected!');
+        date.setDate(date.getDate() + 1);
+        await loadPunten();
+      }
+    },
+  });
+
+  
+    
 
   const loadPunten = async () => {
     setLoading(true);
@@ -37,9 +63,8 @@ export default function puntenScreen() {
     }
     if (schoolware.valid) {
       console.log("logging in")
-        schoolware.getAgenda().then((res) => {setData(res); setLoading(false);});
-        
-
+      schoolware.getAgenda(date).then((res) => {setData(res); setLoading(false);});
+      
     }
   }
   var web = false
@@ -57,7 +82,8 @@ export default function puntenScreen() {
   );
 
   return (
-    <View style={styles.container}>
+
+    <View style={styles.container} {...panResponder.panHandlers}>
       {loading ? (
         // show a loading indicator
         <View>
@@ -76,6 +102,7 @@ export default function puntenScreen() {
         <Text>No points available</Text>
       ) : (
         // render your FlatList
+        
         <FlatList style={web ? [styles.list] : [styles.list, {width: "90%"}]}
           data={data}
           renderItem={({ item }) => renderItem({ item })}
@@ -83,8 +110,10 @@ export default function puntenScreen() {
             <RefreshControl refreshing={loading} onRefresh={loadPunten} />
           }
         />
+        
       )}
     </View>
+
   );
 }
 

@@ -78,7 +78,7 @@ export class Schoolware {
     }
 
     
-    private async makeRequest(path: string) {
+    private async makeRequest(path: string, data: object = {}) {
         try{
             const token = await AsyncStorage.getItem('token');
             if(token != null){
@@ -89,10 +89,13 @@ export class Schoolware {
         } catch(e){
             console.log(e);
         }
+        const fixedData = { "token": this.token }
+        console.log({...fixedData,...data} );
         let response = await axios({
             method: "post",
             url: `${this.server.toString()}${path}`,
-            data: { "token": this.token }
+            data: {...fixedData,...data}//
+            
         })
         return response.data;
     }
@@ -103,16 +106,16 @@ export class Schoolware {
         return response.succes
     }
 
-    async checkAndRequest(path: string) {
+    async checkAndRequest(path: string, data: object = {}) {
         console.log("checking token")
         const succes: boolean = await this.checkToken()
         if (succes) {
             console.log("token valid")
-            return await this.makeRequest(path);
+            return await this.makeRequest(path, data);
         } else {
             console.log("needs to relogin");
             await this.login();
-            return await this.makeRequest(path);
+            return await this.makeRequest(path, data);
         }
 
     }
@@ -123,8 +126,8 @@ export class Schoolware {
     async getTasks(): Promise<tasksDict[]> {
         return await this.checkAndRequest("main/tasks");
     }
-    async getAgenda(): Promise<agendaDict[]> {
-        return await this.checkAndRequest("main/agenda");
+    async getAgenda(date: Date = new Date()): Promise<agendaDict[]> {
+        return await this.checkAndRequest("main/agenda", {"date": date});
     }
 }
 

@@ -9,6 +9,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/components/useColorScheme';
 import { PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -51,6 +52,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
+
     <PaperProvider> 
     <ThemeProvider value={DarkTheme}>
       <Stack>
@@ -63,6 +65,7 @@ function RootLayoutNav() {
         bottomOffset={50}
       />
     </PaperProvider>
+
     
   );
 }
