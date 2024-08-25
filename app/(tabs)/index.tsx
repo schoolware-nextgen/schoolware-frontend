@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, FlatList, RefreshControl, View, Platform, ToastAndroid, PanResponder } from 'react-native';
+import {StyleSheet, FlatList, RefreshControl, View, Platform, PanResponder } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import AgendaCard from '@/components/AgendaCard';
 import { agendaDict, getSchoolware } from '@/components/schoolware';
@@ -6,6 +6,7 @@ import { useColorScheme } from '@/components/useColorScheme.web';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, MD2Colors, Text } from 'react-native-paper';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 
 export default function puntenScreen() {
@@ -17,6 +18,15 @@ export default function puntenScreen() {
   const [openSettings, setopenSettings] = useState(false);
 
   const [date, setDate] = useState(new Date());
+
+  useHotkeys('ArrowLeft', async () => {
+    date.setDate(date.getDate() - 1);
+    await loadPunten();
+  });
+  useHotkeys('ArrowRight', async () => {
+    date.setDate(date.getDate() + 1);
+    await loadPunten();
+  });
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
