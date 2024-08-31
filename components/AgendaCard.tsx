@@ -25,11 +25,11 @@ const AgendaCard: React.FC<agendaDict> = (data) => {
         </View>
         <ViewStyled style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
-        <View style={[styles.row, { marginBottom: 10 }]}>
+        <View style={[styles.row, { marginBottom: 2 }]}>
+          <Text style={{textAlign: "center"}}>{data.period}</Text>
           <Text style={{textAlign: "center"}}>{dayjs(data.date).format('dddd DD/MM')}</Text>
         </View>
 
-        
         <Paragraph>{data.comment}</Paragraph>
 
       </Card.Content>

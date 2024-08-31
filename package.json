@@ -1,5 +1,5 @@
 {
-  "name": "testing",
+  "name": "schoolwarefrontend",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
@@ -31,6 +31,7 @@
     "react-native": "0.74.5",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-paper": "^5.12.5",
+    "react-native-paper-dates": "^0.22.25",
     "react-native-reanimated": "~3.10.1",
     "react-native-safe-area-context": "^4.10.5",
     "react-native-screens": "3.31.1",
