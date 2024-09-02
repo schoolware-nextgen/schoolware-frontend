@@ -1,2 +1,2 @@
-const defaultBackend = "http://192.168.0.111:3000"
+const defaultBackend = "https://backend.mb-server.com"
 export default defaultBackend;
