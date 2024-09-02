@@ -2,11 +2,13 @@ import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Entypo } from '@expo/vector-icons';
 import { Link, Tabs } from 'expo-router';
-import { Pressable, View, Text, StyleSheet } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+
+
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -16,7 +18,13 @@ function TabBarIcon(props: {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
+
+
 export default function TabLayout() {
+
+
+
+
   const colorScheme = useColorScheme();
   return (
     <Tabs
@@ -26,7 +34,10 @@ export default function TabLayout() {
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
-      }}>
+      }}
+      initialRouteName="agenda"
+      >
+      
       <Tabs.Screen
         name="points"
         options={{
@@ -39,7 +50,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'agenda',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="calendar" color={color} />,
           headerRight: () => (
             <Link href="/settings" asChild>
               <Pressable>
@@ -62,7 +73,7 @@ export default function TabLayout() {
         name="tasks"
         options={{
           title: 'taken',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="list-ul" color={color} />,
         }}
       />
 

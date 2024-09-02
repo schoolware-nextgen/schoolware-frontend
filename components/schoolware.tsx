@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import defaultBackend  from "../constants/env"
-import Toast from "react-native-toast-message";
+
 
 export type tasksDict = {
     vak: string,
@@ -150,14 +150,15 @@ export async function getSchoolware() {
                 var savedBackend = backend;
             }
 
-            schoolware = new Schoolware(savedUsername, savedPassword, savedDomain, new URL(savedBackend), true, accountType);
+            return await new Schoolware(savedUsername, savedPassword, savedDomain, new URL(savedBackend), true, accountType);
         }
         else {
             console.log("no saved login info")
+            return await new Schoolware("", "", "", new URL(defaultBackend), false, "");
         }
     } catch (e) {
         console.log(e)
+        return await new Schoolware("", "", "", new URL(defaultBackend), false, "");
     }
-    return schoolware
 }
 
