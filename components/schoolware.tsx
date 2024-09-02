@@ -69,7 +69,6 @@ export class Schoolware {
               });*/
             this.valid = false;
         } else {
-            console.log(response);
             this.valid = true;
             console.log("setting token in storage");
             AsyncStorage.setItem('token', this.token);
@@ -90,7 +89,6 @@ export class Schoolware {
             console.log(e);
         }
         const fixedData = { "token": this.token }
-        console.log({...fixedData,...data} );
         let response = await axios({
             method: "post",
             url: `${this.server.toString()}${path}`,
@@ -131,7 +129,7 @@ export class Schoolware {
     }
 }
 
-var schoolware = new Schoolware("", "", "", new URL(defaultBackend), false, "");
+
 
 export async function getSchoolware() {
     try {

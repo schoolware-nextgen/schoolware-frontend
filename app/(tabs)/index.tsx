@@ -30,6 +30,7 @@ export default function puntenScreen() {
 
   var dateString = dayjs(date).format('dddd DD-MM');
 
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => { },
@@ -65,18 +66,18 @@ export default function puntenScreen() {
   }
 
 
-  const datePick = React.useCallback(
-    (params: any) => {
-      setShowDatePicker(false);
-      setDate(params.date);
-      loadAgenda();
-    },
-    [setShowDatePicker, setDate]
-  );
+  const datePick = async (params: { date: any; }) => {
+    console.log("date picker: ", params.date)
+    var date = params.date;
+    date.setHours(12);
+    setDate(date);
+    setShowDatePicker(false);
+  };
+
 
   const loadAgenda = async () => {
     setLoading(true);
-
+    console.log("date: ", date)
     const schoolware = await getSchoolware();
     if (!schoolware.valid) {
       console.log('schoolware invalid')
@@ -94,6 +95,7 @@ export default function puntenScreen() {
     }
     if (schoolware.valid) {
       console.log("logging in")
+      console.log("date to schoolware: ", date)
       schoolware.getAgenda(date).then((res) => { setData(res); setLoading(false); });
 
     }
@@ -104,18 +106,21 @@ export default function puntenScreen() {
     setfirstRun(false);
     setLoading(false);
     setopenSettings(true);
-    
-  
   }
 
   var web = false
   if (Platform.OS === 'web')
     web = true
+
+  useEffect(() => {
+
+    loadAgenda();
+  }, [date]);
   
   useEffect(() => {
     checkFirstRun();
     if(!firstRun){
-      loadAgenda()
+      //loadAgenda()
     }
     
   }, []);
@@ -199,7 +204,7 @@ export default function puntenScreen() {
           visible={showDatePicker}
           onDismiss={() => {setShowDatePicker(false);}}
           date={date}
-          onConfirm={datePick}
+          onConfirm={async (params) => {await datePick(params)}}
           startWeekOnMonday={true}
         />
 
