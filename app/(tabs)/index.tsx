@@ -156,7 +156,7 @@ export default function puntenScreen() {
 
              <Paragraph style={styles.welcome}><br></br>gemaakt door Maarten</Paragraph>
              <Paragraph style={styles.welcome}>voor vragen kan je me bereiken op maarten@mail.mb-server.com: link...</Paragraph>
-             <Paragraph style={[styles.welcome,{fontSize: 20, fontWeight: 'bold'}]}>SchoolwareFrontend heeft geen enkel verbant met wisa of schoolware</Paragraph>
+             <Paragraph style={[styles.welcome,{fontSize: 20, fontWeight: 'bold'}]}>SchoolwareFrontend heeft geen enkel verband met wisa of schoolware</Paragraph>
              
              <Button icon="check" mode="contained" onPress={accept} style={{marginTop: 15,margin: "auto"}}>
                 accepteren
