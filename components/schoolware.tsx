@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import defaultBackend  from "../constants/env"
-
+import Toast from 'react-native-toast-message';
 
 export type tasksDict = {
     vak: string,
@@ -50,7 +50,7 @@ export class Schoolware {
         this.microsoft = accountType == "microsoft" ? true : false
     }
 
-    async login() {
+    async login(): Promise<[boolean, number]> {
         let response = await axios({
             method: "post",
             url: this.microsoft ? this.server.toString() + "token/microsoft" : this.server.toString() + "token/schoolware",
@@ -60,27 +60,33 @@ export class Schoolware {
                 domain: this.domain
             }
         });
-        this.token = response.data.token;
+        
         let success = response.data.success;
         if (!success) {
             console.log(response);
-            /*let toast = Toast.show('Bad login info, check username and password', {
-                duration: Toast.durations.LONG,
-              });*/
+            Toast.show({
+                type: 'error',
+                text1: 'error during login status: ' + response.data.status,
+              });
+            
             this.valid = false;
+            return [false, response.data.status]
         } else {
+            this.token = response.data.token;
             this.valid = true;
             console.log("setting token in storage");
-            AsyncStorage.setItem('token', this.token);
+            await AsyncStorage.setItem('token', this.token);
+            return [true, response.data.status]
         }
 
     }
 
     
-    private async makeRequest(path: string, data: object = {}) {
+    private async makeRequest(path: string, data: object = {}){
         try{
             const token = await AsyncStorage.getItem('token');
             if(token != null){
+                console.log("found token");
                 this.token = token;
             } else {
                 console.log("no saved token");
@@ -88,44 +94,76 @@ export class Schoolware {
         } catch(e){
             console.log(e);
         }
-        const fixedData = { "token": this.token }
+        const fixedData = { "token": this.token, "domain": this.domain }
         let response = await axios({
             method: "post",
             url: `${this.server.toString()}${path}`,
             data: {...fixedData,...data}//
             
         })
-        return response.data;
+        return [response.data, response.data.success, response.data.status];
     }
 
     async checkToken(): Promise<boolean> {
-        let response = await this.makeRequest("main/check");
-        console.log(response.succes)
-        return response.succes
+        const fixedData = { "token": this.token, "domain": this.domain }
+        let response = await axios({
+            method: "post",
+            url: `${this.server.toString()}main/check`,
+            data: {...fixedData}//
+            
+        })
+        console.log(response.data)
+        return response.data.success;
     }
 
-    async checkAndRequest(path: string, data: object = {}) {
-        console.log("checking token")
-        const succes: boolean = await this.checkToken()
-        if (succes) {
-            console.log("token valid")
-            return await this.makeRequest(path, data);
+
+    async checkAndRequest(path: string, data: object = {}){
+        console.log("making request")
+        //flow
+        //request
+        //check success
+        //if success return data
+        //if not success try relogin and run request again
+        //if success return data
+
+        //try normal request
+        let [response, success, status] = await this.makeRequest(path, data);
+        if(success){
+            //success return data
+            return [response, true];
+        } else if (status == 401){
+            //401 relogin
+            let [success,status] = await this.login();
+            //if success return data
+            if(success){
+                await this.checkAndRequest(path, data);
+            } else {
+                return [response, false]
+            }
         } else {
-            console.log("needs to relogin");
-            await this.login();
-            return await this.makeRequest(path, data);
+            //unknown error return empty array
+            console.log("ERROR request: " + path + " error: "+ status)
+            Toast.show({
+                type: 'error',
+                text1: 'error getting data status: ' + status,
+              });
+            return [response, false]
         }
+        return [response, false];
 
     }
 
     async getPunten(): Promise<pointsDict[]> {
-        return await this.checkAndRequest("main/points");
+        let [response, success] = await this.checkAndRequest("main/points");
+        return response.data;
     }
     async getTasks(): Promise<tasksDict[]> {
-        return await this.checkAndRequest("main/tasks");
+        let [response, success] = await this.checkAndRequest("main/tasks");
+        return response.data;
     }
     async getAgenda(date: Date = new Date()): Promise<agendaDict[]> {
-        return await this.checkAndRequest("main/agenda", {"date": date});
+        let [response, success] = await this.checkAndRequest("main/agenda", {"date": date});
+        return response.data;
     }
 }
 

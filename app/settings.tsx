@@ -97,8 +97,8 @@ export default function ModalScreen() {
         type: 'success',
         text1: 'login info correct, saving ...',
       });
-      let succes = await schoolware.checkToken()
-      if (succes) {
+      let success = await schoolware.checkToken()
+      if (success) {
         AsyncStorage.setItem('username', username);
         AsyncStorage.setItem('password', password);
         AsyncStorage.setItem('domain', domain);

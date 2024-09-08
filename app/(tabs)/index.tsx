@@ -159,7 +159,7 @@ export default function puntenScreen() {
              <Paragraph style={styles.welcome}>de standaard server is door mij gehost, dus zou ik alle je gegevens kunnen stelen en moet je erop vertrouwen dat ik het niet ga doen</Paragraph>
              <Paragraph style={styles.welcome}>als je me niet vertrouwt, kan je de backend zelf hosten, deze is te vinden op mijn github</Paragraph>
 
-             <Paragraph style={styles.welcome}><br></br>gemaakt door Maarten</Paragraph>
+             <Paragraph style={styles.welcome}>gemaakt door Maarten</Paragraph>
              <Paragraph style={styles.welcome}>voor vragen kan je me bereiken op maarten@mail.mb-server.com: link...</Paragraph>
              <Paragraph style={[styles.welcome,{fontSize: 20, fontWeight: 'bold'}]}>SchoolwareFrontend heeft geen enkel verband met wisa of schoolware</Paragraph>
              
