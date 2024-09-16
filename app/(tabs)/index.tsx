@@ -12,6 +12,7 @@ import { nl, registerTranslation } from 'react-native-paper-dates'
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
 registerTranslation('nl', nl)
 
 
@@ -31,7 +32,7 @@ export default function puntenScreen() {
   var dateString = dayjs(date).format('dddd DD-MM');
 
 
-  const panResponder = PanResponder.create({
+  /*const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => { },
     onPanResponderEnd: async (evt, gestureState) => {
@@ -47,11 +48,31 @@ export default function puntenScreen() {
       if (dx < -10) {
         // Swipe left detected!
         console.log('Swipe left detected!');
-        date.setDate(date.getDate() + 1);
-        await loadAgenda();
+
       }
     },
-  });
+  });*/
+  const handleGesture = async (event: { nativeEvent: { translationX: any; translationY: any; state: any; }; }) => {
+
+    const { translationX, translationY, state } = event.nativeEvent;
+
+    if (state === State.END) {
+      if (Math.abs(translationX) > Math.abs(translationY)) {
+      if (translationX < -50) {
+        // Left swipe detected
+        console.log('Swiped Left');
+        date.setDate(date.getDate() + 1);
+        await loadAgenda();
+
+      } else if (translationX > 50) {
+        // Right swipe detected
+        console.log('Swiped Right');
+        date.setDate(date.getDate() - 1);
+        await loadAgenda();
+      }
+    }
+    }
+  };
   const checkFirstRun = async () => {
     console.log("checkfirst run")
     const firstRunResult = await AsyncStorage.getItem('firstRun');
@@ -132,8 +153,14 @@ export default function puntenScreen() {
   );
   
   return (
-    
-    <View style={styles.container} {...panResponder.panHandlers}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PanGestureHandler 
+        onGestureEvent={handleGesture} 
+        onHandlerStateChange={handleGesture}
+        activeOffsetX={[-10, 10]} // To allow small horizontal scrolls to not interfere with vertical scroll
+        activeOffsetY={[-50, 50]}  // To allow vertical scroll without interference
+      >
+    <View style={styles.container} >
       <View style={[styles.date,{flexDirection:'row', justifyContent:"space-between"}]}>
         <Text style= {{fontSize: 20, fontWeight: 'bold'}}>{dateString}</Text>
         <Pressable style = {{marginLeft:10}} onPress={() => setShowDatePicker(!showDatePicker)}>
@@ -209,6 +236,8 @@ export default function puntenScreen() {
         />
 
     </View>
+    </PanGestureHandler>
+    </GestureHandlerRootView>
 
   );
 }

@@ -52,7 +52,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <PaperProvider> 
     <ThemeProvider value={DarkTheme}>
       <Stack>
@@ -65,6 +65,7 @@ function RootLayoutNav() {
         bottomOffset={50}
       />
     </PaperProvider>
+    </GestureHandlerRootView>
 
     
   );
