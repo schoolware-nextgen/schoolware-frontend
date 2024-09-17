@@ -98,7 +98,6 @@ export default function puntenScreen() {
 
   const loadAgenda = async () => {
     setLoading(true);
-    console.log("date: ", date)
     const schoolware = await getSchoolware();
     if (!schoolware.valid) {
       console.log('schoolware invalid')

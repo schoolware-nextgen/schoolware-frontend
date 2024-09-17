@@ -136,7 +136,8 @@ export class Schoolware {
             let [success,status] = await this.login();
             //if success return data
             if(success){
-                await this.checkAndRequest(path, data);
+                let [response, success, status] = await this.makeRequest(path, data);
+                return [response, status]
             } else {
                 return [response, false]
             }
