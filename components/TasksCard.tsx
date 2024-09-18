@@ -23,14 +23,16 @@ const TasksCard: React.FC<tasksDict> = (data) => {
       <Card.Content>
 
         <View style={styles.row}>
-          <Title style={[styles.title, styles.keepLeft, { maxWidth: "60%" }]}>{data.title}</Title>
-          <Title style={[styles.keepRight, styles.titleSize, { maxWidth: "45%" }]}>{data.vak}</Title>
+          
+          <Title style={[ styles.titleSize, { maxWidth: "100%" }]}>{data.vak}</Title>
         </View>
         <ViewStyled style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
-        <View style={[styles.row, { marginBottom: 10 }]}>
+        <Title style={[styles.title, { maxWidth: "100%" , textAlign: "center"}]}>{data.title}</Title>
 
-          <Text style={[data.type === 'toets' ? styles.red : styles.orange, styles.textSize, styles.keepLeft]}>{data.type}</Text>
+        <View style={[styles.row, { marginBottom: 5, marginTop: 20}]}>
+        
+          <Text style={[data.type === 'toets' || data.type === "hertoets" ? styles.red : styles.orange, styles.textSize, styles.keepLeft]}>{data.type}</Text>
           <Text style={{ textAlign: "center" }}>{dayjs(data.deadline).format('dddd DD/MM')}</Text>
 
         </View>

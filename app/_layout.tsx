@@ -5,12 +5,14 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-
 import { useColorScheme } from '@/components/useColorScheme';
 import { PaperProvider } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
+import {
+  MD3LightTheme,
+  MD3DarkTheme,
+} from 'react-native-paper';
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -53,7 +55,7 @@ function RootLayoutNav() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <PaperProvider> 
+    <PaperProvider theme={MD3DarkTheme}> 
     <ThemeProvider value={DarkTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

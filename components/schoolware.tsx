@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import defaultBackend  from "../constants/env"
+import defaultBackend from "../constants/env"
 import Toast from 'react-native-toast-message';
 
 export type tasksDict = {
@@ -60,15 +60,15 @@ export class Schoolware {
                 domain: this.domain
             }
         });
-        
+
         let success = response.data.success;
         if (!success) {
             console.log(response);
             Toast.show({
                 type: 'error',
                 text1: 'error during login status: ' + response.data.status,
-              });
-            
+            });
+
             this.valid = false;
             return [false, response.data.status]
         } else {
@@ -81,25 +81,25 @@ export class Schoolware {
 
     }
 
-    
-    private async makeRequest(path: string, data: object = {}){
-        try{
+
+    private async makeRequest(path: string, data: object = {}) {
+        try {
             const token = await AsyncStorage.getItem('token');
-            if(token != null){
+            if (token != null) {
                 console.log("found token");
                 this.token = token;
             } else {
                 console.log("no saved token");
             }
-        } catch(e){
+        } catch (e) {
             console.log(e);
         }
         const fixedData = { "token": this.token, "domain": this.domain }
         let response = await axios({
             method: "post",
             url: `${this.server.toString()}${path}`,
-            data: {...fixedData,...data}//
-            
+            data: { ...fixedData, ...data }//
+
         })
         return [response.data, response.data.success, response.data.status];
     }
@@ -109,15 +109,15 @@ export class Schoolware {
         let response = await axios({
             method: "post",
             url: `${this.server.toString()}main/check`,
-            data: {...fixedData}//
-            
+            data: { ...fixedData }//
+
         })
         console.log(response.data)
         return response.data.success;
     }
 
 
-    async checkAndRequest(path: string, data: object = {}){
+    async checkAndRequest(path: string, data: object = {}) {
         console.log("making request")
         //flow
         //request
@@ -128,14 +128,14 @@ export class Schoolware {
 
         //try normal request
         let [response, success, status] = await this.makeRequest(path, data);
-        if(success){
+        if (success) {
             //success return data
             return [response, true];
-        } else if (status == 401){
+        } else if (status == 401) {
             //401 relogin
-            let [success,status] = await this.login();
+            let [success, status] = await this.login();
             //if success return data
-            if(success){
+            if (success) {
                 let [response, success, status] = await this.makeRequest(path, data);
                 return [response, status]
             } else {
@@ -143,11 +143,11 @@ export class Schoolware {
             }
         } else {
             //unknown error return empty array
-            console.log("ERROR request: " + path + " error: "+ status)
+            console.log("ERROR request: " + path + " error: " + status)
             Toast.show({
                 type: 'error',
                 text1: 'error getting data status: ' + status,
-              });
+            });
             return [response, false]
         }
         return [response, false];
@@ -163,8 +163,31 @@ export class Schoolware {
         return response.data;
     }
     async getAgenda(date: Date = new Date()): Promise<agendaDict[]> {
-        let [response, success] = await this.checkAndRequest("main/agenda", {"date": date});
-        return response.data;
+        let [response, success] = await this.checkAndRequest("main/agenda", { "date": date });
+
+        let agenda = this.filterAgenda(response.data);
+
+        return agenda;
+    }
+
+    filterAgenda(agenda: agendaDict[]): agendaDict[] {
+        if (agenda.length != 0) {
+            if (agenda[0].period != 1) {
+                for (let i = 0; i < agenda[0].period; i++) {
+                    agenda.unshift({
+                        "comment": "",
+                        "date": new Date(),
+                        "period": 1,
+                        "room": "",
+                        "title": "Geen les",
+                        "vak": ""
+
+                    })
+                }
+            }
+        }
+
+        return agenda;
     }
 }
 
@@ -181,7 +204,7 @@ export async function getSchoolware() {
             var savedUsername = username
             var savedPassword = password
             var savedDomain = domain
-            if(backend == null){
+            if (backend == null) {
                 var savedBackend = defaultBackend
             } else {
                 var savedBackend = backend;

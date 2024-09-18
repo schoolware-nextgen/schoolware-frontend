@@ -12,25 +12,36 @@ const AgendaCard: React.FC<agendaDict> = (data) => {
 
 
   var web = false
-  if(Platform.OS === 'web')
+  if (Platform.OS === 'web')
     web = true
+
+  var title = true
+  if (data.title == data.vak) {
+    title = false
+  }
 
   return (
     <Card style={styles.card}>
       <Card.Content>
-        
-        <View style={styles.row}> 
-          <Title style={[styles.title, styles.keepLeft, {maxWidth: "60%"}]}>{data.title}</Title>
-          <Title style={[styles.keepRight, styles.titleSize, {maxWidth: "45%"}]}>{data.vak}</Title>
+
+        <View style={styles.row}>
+            <Title style={[styles.titleSize, { maxWidth: "100%" }]}>{data.vak}</Title>
+            <Title style={[styles.titleSize, { maxWidth: "100%" }]}>{data.room}</Title>
         </View>
+
         <ViewStyled style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
         <View style={[styles.row, { marginBottom: 2 }]}>
-          <Text style={{textAlign: "center"}}>{data.period}</Text>
-          <Text style={{textAlign: "center"}}>{dayjs(data.date).format('dddd DD/MM')}</Text>
+          { title ? (
+              <Title style={[styles.title]}>{data.title}</Title>
+          ) : (
+            <View></View>
+          )
+          }
+          
         </View>
 
-        <Paragraph>{data.comment}</Paragraph>
+        <Paragraph style={{textAlign:"center"}}>{data.comment}</Paragraph>
 
       </Card.Content>
     </Card>
