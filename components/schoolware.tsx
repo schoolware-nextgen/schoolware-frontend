@@ -160,7 +160,12 @@ export class Schoolware {
     }
     async getTasks(): Promise<tasksDict[]> {
         let [response, success] = await this.checkAndRequest("main/tasks");
-        return response.data;
+        let tasks = response.data;
+        if(tasks[0].title == ""){
+            tasks.shift()
+        }
+
+        return tasks;
     }
     async getAgenda(date: Date = new Date()): Promise<agendaDict[]> {
         let [response, success] = await this.checkAndRequest("main/agenda", { "date": date });
