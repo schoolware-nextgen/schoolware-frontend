@@ -58,7 +58,7 @@ jobs:
       - name: Release githhub
         uses: softprops/action-gh-release@v2
         token: ${{ secrets.github  }}
-        repository: https://github.com/schoolware-nextgen/schoolware-frontend
+        repository: schoolware-nextgen/schoolware-frontend
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
