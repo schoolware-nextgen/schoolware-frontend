@@ -56,14 +56,11 @@ jobs:
  #           android/app/build/outputs/apk/debug/app-debug.apk
       
       - name: Release githhub
-        uses: softprops/action-gh-release@v2
-        token: ${{ secrets.github  }}
-        repository: schoolware-nextgen/schoolware-frontend
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
         with:
-          files: |
-            android/app/build/outputs/apk/release/app-release.apk 
-            android/app/build/outputs/apk/debug/app-debug.apk
+          artifacts: "android/app/build/outputs/apk/release/app-release.apk,android/app/build/outputs/apk/debug/app-debug.apk"
+          token: ${{ secrets.GITHUB }}
+          repo: https://github.com/schoolware-nextgen/schoolware-frontend
             
 
 
