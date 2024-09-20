@@ -60,6 +60,7 @@ jobs:
         with:
           artifacts: "android/app/build/outputs/apk/release/app-release.apk,android/app/build/outputs/apk/debug/app-debug.apk"
           token: ${{ secrets.GITHUB }}
+          owner: maarten-buelens
           repo: https://github.com/schoolware-nextgen/schoolware-frontend
             
 
