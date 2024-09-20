@@ -1,0 +1,55 @@
+name: Build image
+on:
+  push:
+    tags:
+      - "v*.*.*"
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    container:
+      image: catthehacker/ubuntu:act-latest
+    env:
+      DOCKER_USERNAME: gitea
+      RUNNER_TOOL_CACHE: /toolcache # Runner Tool Cache
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker BuildX
+        uses: docker/setup-buildx-action@v2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 21
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: export
+        run: |
+          npm install @react-native/assets-registry
+          npm i react-native-root-siblings
+          npm i expo-asset
+          npm i babel-preset-expo
+          npm i @babel/runtime
+          npx expo export --platform web
+      
+      - name: Login to gitea Container Registry
+        uses: docker/login-action@v3
+        with:
+          username: schoolwarenext
+          password: ${{ secrets.DOCKER_HUB  }}
+        
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: |
+            linux/amd64                                                
+          push: true
+          tags: schoolwarenext/schoolware-frontend:latest
