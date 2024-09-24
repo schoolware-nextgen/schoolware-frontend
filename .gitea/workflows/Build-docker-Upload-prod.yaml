@@ -24,18 +24,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 21
-          cache: 'npm'
+
+      - uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: npm i
+        run: bun i
 
       - name: export
         run: |
-          npm install @react-native/assets-registry
-          npm i react-native-root-siblings
-          npm i expo-asset
-          npm i babel-preset-expo
-          npm i @babel/runtime
+          bun install @react-native/assets-registry @babel/runtime react-native-root-siblings expo-asset babel-preset-expo
           npx expo export --platform web
       
       - name: Login to gitea Container Registry
