@@ -1,5 +1,8 @@
 name: Build image
-on: [push]
+on:
+  push:
+    tags:
+      - "v*.*.*"
 jobs:
   build-image:
     runs-on: ubuntu-latest
@@ -22,6 +25,12 @@ jobs:
         with:
           node-version: 21
 
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-${{ matrix.bun }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.bun }}-bun-
 
       - uses: oven-sh/setup-bun@v2
 

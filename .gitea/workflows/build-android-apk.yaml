@@ -1,6 +1,8 @@
 name: Build image
 on:
-  [push]
+  push:
+    tags:
+      - "v*.*.*"
 jobs:
   build-image:
     runs-on: android
@@ -16,6 +18,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 21
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-${{ matrix.bun }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.bun }}-bun-
 
       - uses: oven-sh/setup-bun@v2
 
@@ -54,7 +63,8 @@ jobs:
           files: |
             android/app/build/outputs/apk/release/app-release.apk 
             android/app/build/outputs/apk/debug/app-debug.apk
-      
+
+
             
 
 
