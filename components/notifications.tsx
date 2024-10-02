@@ -12,7 +12,7 @@ const requestNotificationPermission = async () => {
 };
 
 // Send a notification
-export const sendNotification = async () => {
+export const sendNotification = async (message: string) => {
     console.log('Sending notification');
   const permissionGranted = await requestNotificationPermission();
   if (!permissionGranted) {
@@ -30,9 +30,8 @@ export const sendNotification = async () => {
   
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Nieuw Punt',
-      body: 'This is a reminder to check the app.',
-      data: { someData: 'goes here' },
+      title: 'Nieuwe Punten',
+      body: message,
     },
     trigger: null, // trigger immediately
   });

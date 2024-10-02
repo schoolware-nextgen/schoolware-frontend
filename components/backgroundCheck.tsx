@@ -4,6 +4,20 @@ import { sendNotification } from './notifications';
 import { getSchoolware, pointsDict } from './schoolware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const getUniqueElements = (arr1: pointsDict[], arr2: pointsDict[]): pointsDict[] => {
+    return arr1.filter(item1 => 
+        !arr2.some(item2 => 
+            item1.vak === item2.vak &&
+            item1.title === item2.title &&
+            item1.comment === item2.comment &&
+            item1.scoreFloat === item2.scoreFloat &&
+            item1.scoreTotal === item2.scoreTotal &&
+            item1.dw === item2.dw &&
+            item1.type === item2.type
+        )
+    );
+};
+
 
 // Define a background task
 TaskManager.defineTask('background-fetch-task', async () => {
@@ -24,21 +38,23 @@ TaskManager.defineTask('background-fetch-task', async () => {
     const schoolware = await getSchoolware();
     if (schoolware.valid) {
         console.log("BACKGROUND: logging in")
-          schoolware.getPunten().then((res) => {
-            if(res !== prevPunten){
+          schoolware.getPunten().then(async (res) => {
+            console.log("BACKGROUND: old: ", prevPunten.length)
+            console.log("BACKGROUND: new: ", res.length)
+            const newPoints = getUniqueElements(res, prevPunten);
+            if(newPoints.length >= 1){
                 console.log("BACKGROUND: new punten")
-
-                const newPoints = res.filter(element => !prevPunten.includes(element));
                 console.log(`BACKGROUND: new points: ${newPoints}`)
-
-                prevPunten = res;
-                AsyncStorage.setItem('backgroundPunten', JSON.stringify(prevPunten));
-            }
+                await AsyncStorage.setItem('backgroundPunten', JSON.stringify(res));
+                let notification = ""
+                newPoints.forEach((point: pointsDict) => {
+                    notification += `${point.vak} ${point.title}: ${point.scoreFloat*point.scoreTotal}/${point.scoreTotal}\n`
+                });
+                await sendNotification(notification);
+            } 
           });
       }
 
-
-    await sendNotification();
     
 
     // Return BackgroundFetch.Result.NewData if new data was fetched,
