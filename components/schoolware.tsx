@@ -31,6 +31,12 @@ export type agendaDict = {
     period: number
 }
 
+export type berichtenDict = {
+    titel: String,
+    bericht: String,
+    date: Date
+}
+
 export class Schoolware {
     username: string;
     password: string;
@@ -63,7 +69,6 @@ export class Schoolware {
 
         let success = response.data.success;
         if (!success) {
-            console.log(response);
             Toast.show({
                 type: 'error',
                 text1: 'error during login status: ' + response.data.status,
@@ -112,13 +117,11 @@ export class Schoolware {
             data: { ...fixedData }//
 
         })
-        console.log(response.data)
         return response.data.success;
     }
 
 
     async checkAndRequest(path: string, data: object = {}) {
-        console.log("making request")
         //flow
         //request
         //check success
@@ -169,10 +172,13 @@ export class Schoolware {
     }
     async getAgenda(date: Date = new Date()): Promise<agendaDict[]> {
         let [response, success] = await this.checkAndRequest("main/agenda", { "date": date });
-
         let agenda = this.filterAgenda(response.data);
-
         return agenda;
+    }
+
+    async getBerichten(): Promise<berichtenDict[]> {
+        let [response, success] = await this.checkAndRequest("main/berichten");
+        return response.data;
     }
 
     filterAgenda(agenda: agendaDict[]): agendaDict[] {

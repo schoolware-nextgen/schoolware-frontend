@@ -3,6 +3,9 @@ on:
   push:
     tags:
       - "v*.*.*"
+    branches: 
+      - main
+      - dev
 jobs:
   build-image:
     runs-on: android
@@ -55,8 +58,9 @@ jobs:
           path: |
             android/app/build/outputs/apk/debug/app-debug.apk
             - uses: actions/checkout@v2
-
-      - name: Release local
+            
+      - if: github.ref == 'refs/heads/main'
+        name: Release local
         uses: softprops/action-gh-release@v2
         token: ${{ secrets.gitea  }}
         with:

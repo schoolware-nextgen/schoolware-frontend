@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { Button, Card, RadioButton, Title } from 'react-native-paper';
 import defaultBackend  from "../constants/env"
+import { setupnotifications } from './_layout';
 
 
 
@@ -33,6 +34,10 @@ export default function ModalScreen() {
 
   var [backend, setBackend] = React.useState(defaultBackend);
   const [isBackendValid, setIsBackendValid] = React.useState(true);
+
+  var [notificationsEnabled, setNotificationsEnabled] = React.useState(false);
+
+  
 
   const validateUsername = (email: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -84,6 +89,10 @@ export default function ModalScreen() {
     return re.test(url);
   };
 
+  const handleNotificationChange = () => {
+    setNotificationsEnabled(!notificationsEnabled);
+  };
+
   async function onSubmit() {
     if (username !== "" && password !== "" && domain !== "") {
       
@@ -104,6 +113,11 @@ export default function ModalScreen() {
         AsyncStorage.setItem('domain', domain);
         AsyncStorage.setItem('accountType', accountType);
         AsyncStorage.setItem('backend', backend);
+        AsyncStorage.setItem('notifications', notificationsEnabled? 'true': 'false');
+
+        if(notificationsEnabled){
+          setupnotifications();
+        }
         Toast.show({
           type: 'success',
           text1: 'login info saved',
@@ -142,7 +156,9 @@ export default function ModalScreen() {
     const domain = await AsyncStorage.getItem('domain');
     const accountType = await AsyncStorage.getItem('accountType');
     const backend = await AsyncStorage.getItem('backend');
-    if (username !== null && password !== null && domain !== null && accountType != null) {
+    const notifications = await AsyncStorage.getItem('notifications');
+
+    if (username !== null && password !== null && domain !== null && accountType != null && notifications != null) {
       setUsername(username);
       setPassword(password);
       setDomain(domain);
@@ -152,6 +168,8 @@ export default function ModalScreen() {
       handlePasswordChange(password);
       handleDomainChange(domain);
       handleAccountTypeChange(accountType);
+
+      setNotificationsEnabled(notifications === 'true');
 
       setsaveDisabled(false);
 
@@ -254,6 +272,20 @@ export default function ModalScreen() {
             {!isBackendValid && <Text style={styles.errorText} >Invalid URL</Text>}
           </Card.Content>
         </Card>
+
+        <Card style={styles.card}>
+          <Card.Content>
+            <Title style={styles.title}>notifications</Title>
+            <Text style={styles.title}>{notificationsEnabled ? "enabled" : "disabled"}</Text>
+            <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange}>
+              toggle notifications
+            </Button>
+
+          </Card.Content>
+        </Card>
+
+
+
 
         <Button style={styles.button} icon="floppy" mode="contained" onPress={onSubmit} disabled={saveDisabled}>
           Save
