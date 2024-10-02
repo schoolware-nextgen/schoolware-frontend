@@ -18,15 +18,16 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/schoolware.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.mb.schoolwareFrontend"
     },
+    "permissions": ["NOTIFICATIONS"],
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/schoolware.png"
     },
     "plugins": [
       "expo-router"
