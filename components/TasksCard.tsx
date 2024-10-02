@@ -37,7 +37,7 @@ const TasksCard: React.FC<tasksDict> = (data) => {
 
         </View>
 
-        <Paragraph>{data.comment}</Paragraph>
+        <Paragraph style={{textAlign: "center"}}>{data.comment}</Paragraph>
 
       </Card.Content>
     </Card>

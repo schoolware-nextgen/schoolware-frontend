@@ -13,6 +13,7 @@ import {
   MD3LightTheme,
   MD3DarkTheme,
 } from 'react-native-paper';
+import { registerBackgroundFetch } from '@/components/backgroundCheck';
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -41,6 +42,13 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
+    console.log("setting up notifications")
+    const initBackgroundFetch = async () => {
+      await registerBackgroundFetch();
+    };
+
+    initBackgroundFetch();
+    
   }, [loaded]);
 
   if (!loaded) {

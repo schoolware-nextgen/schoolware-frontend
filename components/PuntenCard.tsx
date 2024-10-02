@@ -6,6 +6,17 @@ import { StyleSheet, View, Platform } from 'react-native';
 import { View as ViewStyled } from '@/components/Themed';
 import dayjs from "dayjs";
 
+const getColorFromValue = (value: number) => {
+  if (value <= 0.5) {
+    // Keep it red for values <= 0.5
+    return `rgb(255, 0, 0)`;
+  } else {
+    // Transition from red to green for values > 0.5
+    const green = Math.floor(255 * ((value - 0.5) * 2));  // Progressively increase green
+    const red = Math.floor(255 * (1 - (value - 0.5) * 2));  // Decrease red
+    return `rgb(${red}, ${green}, 0)`;
+  }
+};
 
 const PuntenCard: React.FC<pointsDict> = (data) => {
   const { colors } = useTheme();
@@ -14,6 +25,7 @@ const PuntenCard: React.FC<pointsDict> = (data) => {
   if (Number.isNaN(scoreFloat)) {
     scoreFloat = 0
   }
+  const color = getColorFromValue(scoreFloat); // Get the color based on the value
 
   var web = false
   if(Platform.OS === 'web')
@@ -35,11 +47,11 @@ const PuntenCard: React.FC<pointsDict> = (data) => {
         <Text style={[styles.textSize, styles.keepRight]}>{data.dw}</Text>
           <Text style={[data.type === 'toets' || data.type === "hertoets" ? styles.red : styles.orange, styles.textSize, styles.keepLeft]}>{data.type}</Text>
           <Text style={{textAlign: "center"}}>{dayjs(data.date).format('dddd DD/MM')}</Text>
-          
         </View>
 
         <View>
-            <ProgressBar progress={scoreFloat} color={"#2E7D32"} style={styles.progressBar}/>
+            <ProgressBar progress={scoreFloat} color={color} style={styles.progressBar}/>
+
             <Text style={web ? [styles.text, {position: "relative", top: -20}] : [styles.text, {position: "relative", top: -24}]   }>{(scoreFloat * data.scoreTotal).toPrecision(2)}/{data.scoreTotal} {Math.round(scoreFloat * 100)}%</Text>
         </View>
         

@@ -29,7 +29,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors.dark.tint,
 
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
@@ -43,6 +43,22 @@ export default function TabLayout() {
         options={{
           title: 'punten',
           tabBarIcon: ({ color }) => <Entypo name="bar-graph" size={24} color={color} />,
+          headerRight: () => (
+            <Link href="/settings" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <View>
+                  <FontAwesome
+                    name="gear"
+                    size={25}
+                    color={Colors.dark.text}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                  </View>
+                )}
+              </Pressable>
+            </Link>
+          ),
   
         }}
       />
@@ -59,7 +75,7 @@ export default function TabLayout() {
                   <FontAwesome
                     name="gear"
                     size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
+                    color={Colors.dark.text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                   </View>
@@ -74,6 +90,46 @@ export default function TabLayout() {
         options={{
           title: 'taken',
           tabBarIcon: ({ color }) => <TabBarIcon name="list-ul" color={color} />,
+          headerRight: () => (
+            <Link href="/settings" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <View>
+                  <FontAwesome
+                    name="gear"
+                    size={25}
+                    color={Colors.dark.text}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                  </View>
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
+    
+    <Tabs.Screen
+        name="berichten"
+        options={{
+          title: 'berichten',
+          tabBarIcon: ({ color }) => <TabBarIcon name="envelope" color={color} />,
+          headerRight: () => (
+            <Link href="/settings" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <View>
+                  <FontAwesome
+                    name="gear"
+                    size={25}
+                    color={Colors.dark.text}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                  </View>
+                )}
+              </Pressable>
+            </Link>
+          ),
         }}
       />
 
