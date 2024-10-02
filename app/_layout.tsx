@@ -14,6 +14,7 @@ import {
   MD3DarkTheme,
 } from 'react-native-paper';
 import { registerBackgroundFetch } from '@/components/backgroundCheck';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -27,11 +28,28 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+export async function setupnotifications() {
+  const notifications = await AsyncStorage.getItem('notifications');
+
+  if(notifications === 'true') {
+  console.log("setting up notifications")
+  const initBackgroundFetch = async () => {
+    await registerBackgroundFetch();
+  };
+
+  initBackgroundFetch();
+} else {
+  console.log("notifications not enabled")
+}
+}
+
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
+
+
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -42,12 +60,8 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-    console.log("setting up notifications")
-    const initBackgroundFetch = async () => {
-      await registerBackgroundFetch();
-    };
+    setupnotifications();
 
-    initBackgroundFetch();
     
   }, [loaded]);
 

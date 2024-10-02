@@ -70,7 +70,7 @@ TaskManager.defineTask('background-fetch-task', async () => {
 export const registerBackgroundFetch = async () => {
   return BackgroundFetch.registerTaskAsync('background-fetch-task', {
     minimumInterval: 1 * 60, // 10 minutes
-    stopOnTerminate: true, // continue even after app is closed
+    stopOnTerminate: false, // continue even after app is closed
     startOnBoot: true, // start when device is rebooted
   });
 };
