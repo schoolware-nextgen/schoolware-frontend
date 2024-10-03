@@ -1,33 +1,51 @@
-import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+import React, { useState, useEffect, useRef } from "react";
+import {  Platform } from "react-native";
 
-// Ask for permission to send notifications
-const requestNotificationPermission = async () => {
-  const { status } = await Notifications.requestPermissionsAsync();
-  if (status !== 'granted') {
-    alert('Please grant notification permissions');
-    return false;
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
+export async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
   }
-  return true;
-};
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId: "Constants.easConfig.projectId", // you can hard code project id if you dont want to use expo Constants
+        })
+      ).data;
+      console.log(token);
+
+  return token;
+}
+
 
 // Send a notification
 export const sendNotification = async (message: string) => {
-    console.log('Sending notification');
-  const permissionGranted = await requestNotificationPermission();
-  if (!permissionGranted) {
-    console.log('Permission not granted');
-    return;}
-  console.log('notification permision OK');
-  
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
-  });
-  
   await Notifications.scheduleNotificationAsync({
     content: {
       title: 'Nieuwe Punten',
@@ -35,4 +53,6 @@ export const sendNotification = async (message: string) => {
     },
     trigger: null, // trigger immediately
   });
+  console.log('Sending notification');
+
 };

@@ -8,7 +8,8 @@ import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { Button, Card, RadioButton, Title } from 'react-native-paper';
 import defaultBackend  from "../constants/env"
-import { setupnotifications } from './_layout';
+import { registerBackgroundFetch } from '@/components/backgroundCheck';
+
 
 
 
@@ -123,7 +124,8 @@ export default function ModalScreen() {
         }
 
         if(notificationsEnabled){
-          setupnotifications();
+          //setupnotifications();
+          await registerBackgroundFetch();
         }
         Toast.show({
           type: 'success',
@@ -153,9 +155,6 @@ export default function ModalScreen() {
     }
 
   }
-
-
-
 
   async function loadSettings() {
     const username = await AsyncStorage.getItem('username');

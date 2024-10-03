@@ -55,8 +55,7 @@ TaskManager.defineTask('background-fetch-task', async () => {
           });
       }
 
-    
-
+  
     // Return BackgroundFetch.Result.NewData if new data was fetched,
     // otherwise return BackgroundFetch.Result.NoData
     return BackgroundFetch.BackgroundFetchResult.NewData;
@@ -68,8 +67,9 @@ TaskManager.defineTask('background-fetch-task', async () => {
 
 // Register the background fetch task
 export const registerBackgroundFetch = async () => {
+  console.log("BACKGROUND: registering background fetch")
   return BackgroundFetch.registerTaskAsync('background-fetch-task', {
-    minimumInterval: 1 * 60, // 10 minutes
+    minimumInterval: 1 * 1, // 10 minutes
     stopOnTerminate: false, // continue even after app is closed
     startOnBoot: true, // start when device is rebooted
   });

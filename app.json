@@ -23,7 +23,9 @@
       },
       "package": "com.mb.schoolwareFrontend"
     },
-    "permissions": ["NOTIFICATIONS"],
+    "permissions": [
+      "NOTIFICATIONS"
+    ],
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -35,5 +37,6 @@
     "experiments": {
       "typedRoutes": true
     }
+
   }
 }
