@@ -1,20 +1,12 @@
 // SimpleCard.tsx
-import React, { useEffect, useRef, useState } from 'react';
-import { Card, Title, Paragraph, ProgressBar, useTheme, Text, Icon } from 'react-native-paper';
+import React, { useState } from 'react';
+import { Card, Text} from 'react-native-paper';
 import { berichtenDict } from '@/components/schoolware';
-import { StyleSheet, View, Platform, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback } from 'react-native';
 import { View as ViewStyled } from '@/components/Themed';
-
 import RenderHTML from 'react-native-render-html';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { sendNotification } from './notifications';
 
-function TabBarIcon(props: {
-    name: React.ComponentProps<typeof FontAwesome>['name'];
-    color: string;
-}) {
-    return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+
 
 const BerichtenCard: React.FC<berichtenDict> = (data) => {
     const [expanded, setExpanded] = useState(false);
@@ -32,8 +24,6 @@ const BerichtenCard: React.FC<berichtenDict> = (data) => {
             color: 'green'
         }
     }
-
-    const ignoredTags = ["body"]
 
     return (
         <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>

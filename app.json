@@ -4,7 +4,7 @@
     "slug": "schoolwareFrontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/schoolware.png",
     "scheme": "myapp",
     "userInterfaceStyle": "dark",
     "colorScheme": "dark",

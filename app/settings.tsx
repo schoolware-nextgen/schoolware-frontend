@@ -37,7 +37,9 @@ export default function ModalScreen() {
 
   var [notificationsEnabled, setNotificationsEnabled] = React.useState(false);
 
-  
+  var web = false
+  if (Platform.OS === 'web')
+    web = true
 
   const validateUsername = (email: string): boolean => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -81,7 +83,7 @@ export default function ModalScreen() {
 
   const handleBackendChange = (text: string) => {
     setBackend(text);
-    setIsBackendValid(validateDomain(text));
+    setIsBackendValid(true);
   };
 
   const validateDomain = (url: string): boolean => {
@@ -113,7 +115,12 @@ export default function ModalScreen() {
         AsyncStorage.setItem('domain', domain);
         AsyncStorage.setItem('accountType', accountType);
         AsyncStorage.setItem('backend', backend);
+        if(!web){
         AsyncStorage.setItem('notifications', notificationsEnabled? 'true': 'false');
+        } else {
+          setNotificationsEnabled(false);
+          AsyncStorage.setItem('notifications', 'false');
+        }
 
         if(notificationsEnabled){
           setupnotifications();
@@ -276,8 +283,8 @@ export default function ModalScreen() {
         <Card style={styles.card}>
           <Card.Content>
             <Title style={styles.title}>notifications</Title>
-            <Text style={styles.title}>{notificationsEnabled ? "enabled" : "disabled"}</Text>
-            <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange}>
+            <Text style={styles.title}>{web ? "not supported" : notificationsEnabled ? "enabled" : "disabled"}</Text>
+            <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange} disabled={web}>
               toggle notifications
             </Button>
 
