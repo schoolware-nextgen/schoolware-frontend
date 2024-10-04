@@ -91,7 +91,7 @@ export class Schoolware {
         try {
             const token = await AsyncStorage.getItem('token');
             if (token != null) {
-                console.log("found token");
+                //console.log("found token");
                 this.token = token;
             } else {
                 console.log("no saved token");

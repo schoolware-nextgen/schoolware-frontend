@@ -32,10 +32,10 @@ export default function BerichtenScreen() {
       setopenSettings(true)
 
     } else {
-      console.log("Schoolware valid")
+      //console.log("Schoolware valid")
     }
     if (schoolware.valid) {
-      console.log("logging in")
+      //console.log("logging in")
         schoolware.getBerichten().then((res) => {setData(res); setLoading(false);});
     }
   }

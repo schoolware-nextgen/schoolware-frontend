@@ -111,11 +111,11 @@ export default function puntenScreen() {
       setopenSettings(true)
 
     } else {
-      console.log("Schoolware valid")
+      //console.log("Schoolware valid")
     }
     if (schoolware.valid) {
-      console.log("logging in")
-      console.log("date to schoolware: ", date)
+      //console.log("logging in")
+      //console.log("date to schoolware: ", date)
       schoolware.getAgenda(date).then((res) => { setData(res); setLoading(false); });
 
     }

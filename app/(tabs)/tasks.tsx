@@ -33,10 +33,10 @@ export default function puntenScreen() {
       setopenSettings(true)
 
     } else {
-      console.log("Schoolware valid")
+      //console.log("Schoolware valid")
     }
     if (schoolware.valid) {
-      console.log("logging in")
+      //console.log("logging in")
         schoolware.getTasks().then((res) => {setData(res); setLoading(false);});
         
 

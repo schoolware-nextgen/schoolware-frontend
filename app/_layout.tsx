@@ -55,8 +55,8 @@ export default function RootLayout() {
         await registerBackgroundFetch();
       };
       registerForPushNotificationsAsync()
-        .then(token => setExpoPushToken(token ?? ''))
-        .catch((error: any) => setExpoPushToken(`${error}`));
+        //.then(token => setExpoPushToken(token ?? ''))
+        //.catch((error: any) => setExpoPushToken(`${error}`));
   
       notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
         setNotification(notification);

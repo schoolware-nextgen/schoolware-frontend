@@ -2,14 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { Platform, Pressable, ScrollView, SectionList, StyleSheet, ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Text, View, TextInput } from '@/components/Themed';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Schoolware } from '@/components/schoolware';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { Button, Card, RadioButton, Title } from 'react-native-paper';
 import defaultBackend  from "../constants/env"
 import { registerBackgroundFetch } from '@/components/backgroundCheck';
-
+import { registerForPushNotificationsAsync } from '@/components/notifications';
+import * as Notifications from 'expo-notifications';
 
 
 
@@ -37,6 +38,42 @@ export default function ModalScreen() {
   const [isBackendValid, setIsBackendValid] = React.useState(true);
 
   var [notificationsEnabled, setNotificationsEnabled] = React.useState(false);
+
+
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState<Notifications.Notification | undefined>(
+    undefined
+  );
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
+
+  async function setupnotifications() {
+    const notifications = await AsyncStorage.getItem('notifications');
+  
+    if (notifications === 'true') {
+      console.log("setting up notifications")
+      const initBackgroundFetch = async () => {
+        await registerBackgroundFetch();
+      };
+      registerForPushNotificationsAsync()
+      //  .then(token => setExpoPushToken(token ?? ''))
+      //  .catch((error: any) => setExpoPushToken(`${error}`));
+  
+      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        setNotification(notification);
+      });
+  
+      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+        console.log(response);
+      });
+  
+      initBackgroundFetch();
+    } else {
+      console.log("notifications not enabled")
+    }
+  }
+
+
 
   var web = false
   if (Platform.OS === 'web')
