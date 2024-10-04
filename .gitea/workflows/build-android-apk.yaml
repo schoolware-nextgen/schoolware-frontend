@@ -51,14 +51,14 @@ jobs:
         with:
           name: release apk
           path: |
-            android/app/build/outputs/apk/release/app-release.apk 
+            build*
       
       - name: Upload debug apk
         uses: actions/upload-artifact@v3
         with:
           name: debug apk
           path: |
-            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/apk/debug/app-debug.
             - uses: actions/checkout@v2
             
       - if: github.ref == 'refs/heads/main'
