@@ -42,7 +42,7 @@ jobs:
 
       - name: Build
         run: |
-          bun i eas-cli
+          bun i -g eas-cli
           eas build --local --non-interactive -p android
 #ANDROID_HOME=/android/Sdk PATH=$PATH:$ANDROID_HOME/emulator PATH=$PATH:$ANDROID_HOME/platform-tools npx react-native build-android --verbose --tasks assemble
 
