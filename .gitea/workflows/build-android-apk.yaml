@@ -47,7 +47,7 @@ jobs:
       - name: Build
         run: |
           bun i -g eas-cli
-          EXPO_TOKEN=${{ secrets.EXPOTOKEN  }} ANDROID_HOME=/android/Sdk PATH=$PATH:$ANDROID_HOME/emulator PATH=$PATH:$ANDROID_HOME/platform-tools eas build --local --non-interactive -p android -e development
+          EXPO_TOKEN=${{ secrets.EXPOTOKEN  }} ANDROID_HOME=/android/Sdk PATH=$PATH:$ANDROID_HOME/emulator PATH=$PATH:$ANDROID_HOME/platform-tools eas build --local --non-interactive -p android
 #ANDROID_HOME=/android/Sdk PATH=$PATH:$ANDROID_HOME/emulator PATH=$PATH:$ANDROID_HOME/platform-tools npx react-native build-android --verbose --tasks assemble
 
       - name: Upload release apk
