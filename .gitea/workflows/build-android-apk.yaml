@@ -39,6 +39,10 @@ jobs:
           distribution: temurin
           java-version: 21
 #          cache: gradle
+      - name: decrypt files
+        run: | 
+          gpg --batch --output google-services.json --passphrase ${{ secrets.GOOGLEKEY  }} --decrypt google-services.json.gpg
+          gpg --batch --output credentials.json --passphrase ${{ secrets.GOOGLEKEY  }} --decrypt credentials.json.gpg
 
       - name: Build
         run: |

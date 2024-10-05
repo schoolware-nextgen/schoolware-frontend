@@ -32,7 +32,7 @@ TaskManager.defineTask('background-fetch-task', async () => {
         console.log("BACKGROUND: no previous punten")
     } else {
         prevPunten = JSON.parse(savedPunten);
-        console.log(`BACKGROUND: previous punten: ${prevPunten}`)
+        //console.log(`BACKGROUND: previous punten: ${prevPunten}`)
     }
 
     const schoolware = await getSchoolware();
@@ -44,7 +44,7 @@ TaskManager.defineTask('background-fetch-task', async () => {
             const newPoints = getUniqueElements(res, prevPunten);
             if(newPoints.length >= 1){
                 console.log("BACKGROUND: new punten")
-                console.log(`BACKGROUND: new points: ${newPoints}`)
+                //console.log(`BACKGROUND: new points: ${newPoints}`)
                 await AsyncStorage.setItem('backgroundPunten', JSON.stringify(res));
                 let notification = ""
                 newPoints.forEach((point: pointsDict) => {

@@ -10,7 +10,6 @@ web-build/
 
 # Native
 *.orig.*
-*.jks
 *.p8
 *.p12
 *.key
@@ -40,3 +39,5 @@ yarn-error.*
 expo-env.d.ts
 # @end expo-cli
 google-services.json
+# credentials/
+credentials.json

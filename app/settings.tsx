@@ -9,7 +9,7 @@ import Toast from 'react-native-toast-message';
 import { Button, Card, RadioButton, Title } from 'react-native-paper';
 import defaultBackend  from "../constants/env"
 import { registerBackgroundFetch } from '@/components/backgroundCheck';
-import { registerForPushNotificationsAsync } from '@/components/notifications';
+//import { registerForPushNotificationsAsync } from '@/components/notifications';
 import * as Notifications from 'expo-notifications';
 
 
@@ -50,7 +50,7 @@ export default function ModalScreen() {
   async function setupnotifications() {
     const notifications = await AsyncStorage.getItem('notifications');
   
-    if (notifications === 'true') {
+    /*if (notifications === 'true') {
       console.log("setting up notifications")
       const initBackgroundFetch = async () => {
         await registerBackgroundFetch();
@@ -70,7 +70,7 @@ export default function ModalScreen() {
       initBackgroundFetch();
     } else {
       console.log("notifications not enabled")
-    }
+    }*/
   }
 
 

@@ -13,14 +13,13 @@ import {
   MD3LightTheme,
   MD3DarkTheme,
 } from 'react-native-paper';
-import { registerBackgroundFetch } from '@/components/backgroundCheck';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { registerForPushNotificationsAsync, sendPushNotification } from '@/components/notifications';
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from 'expo-router';
 import * as Notifications from 'expo-notifications';
-import { registerForPushNotificationsAsync } from '@/components/notifications';
+import { Button } from 'react-native';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -30,47 +29,11 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-
-
-
-
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState<Notifications.Notification | undefined>(
-    undefined
-  );
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
-
-  async function setupnotifications() {
-    const notifications = await AsyncStorage.getItem('notifications');
-  
-    if (notifications === 'true') {
-      console.log("setting up notifications")
-      const initBackgroundFetch = async () => {
-        await registerBackgroundFetch();
-      };
-      registerForPushNotificationsAsync()
-        //.then(token => setExpoPushToken(token ?? ''))
-        //.catch((error: any) => setExpoPushToken(`${error}`));
-  
-      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        setNotification(notification);
-      });
-  
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log(response);
-      });
-  
-      initBackgroundFetch();
-    } else {
-      console.log("notifications not enabled")
-    }
-  }
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -81,10 +44,9 @@ export default function RootLayout() {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-    setupnotifications();
-
-
   }, [loaded]);
+
+
 
   if (!loaded) {
     return null;
@@ -95,6 +57,33 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState<Notifications.Notification | undefined>(
+    undefined
+  );
+  const notificationListener = useRef<Notifications.Subscription>();
+  const responseListener = useRef<Notifications.Subscription>();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+      .then(token => setExpoPushToken(token ?? ''))
+      .catch((error: any) => setExpoPushToken(`${error}`));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -109,6 +98,12 @@ function RootLayoutNav() {
           position='bottom'
           bottomOffset={50}
         />
+        <Button
+        title="Press to Send Notification"
+        onPress={async () => {
+          await sendPushNotification(expoPushToken);
+        }}
+      />
       </PaperProvider>
     </GestureHandlerRootView>
 

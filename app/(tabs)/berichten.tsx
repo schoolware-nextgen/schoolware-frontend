@@ -80,6 +80,7 @@ export default function BerichtenScreen() {
             <RefreshControl refreshing={loading} onRefresh={loadBerichten} />
           }
         />
+        
       )}
     </View>
   );
