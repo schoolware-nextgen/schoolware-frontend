@@ -188,27 +188,29 @@ export default function ModalScreen() {
     const backend = await AsyncStorage.getItem('backend');
     const notifications = await AsyncStorage.getItem('notifications');
 
-    if (username !== null && password !== null && domain !== null && accountType != null && notifications != null) {
+    if (username !== null) {
       setUsername(username);
-      setPassword(password);
-      setDomain(domain);
-      setAccountType(accountType);
-
       handleUsernameChange(username);
+    }
+    if (password!== null) {
+      setPassword(password);
       handlePasswordChange(password);
+    }
+    if (domain!== null) {
+      setDomain(domain);
       handleDomainChange(domain);
+    }
+    if (accountType!== null) {
+      setAccountType(accountType);
       handleAccountTypeChange(accountType);
-
-      setNotificationsEnabled(notifications === 'true');
-
-      setsaveDisabled(false);
-
-
+    }
+    if(notifications !==null){
+    setNotificationsEnabled(notifications === 'true');
     }
     if (backend != null) {
       setBackend(backend);
     }
-
+    setsaveDisabled(false);
   }
 
 
