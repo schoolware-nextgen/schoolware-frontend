@@ -11,6 +11,7 @@ import defaultBackend  from "../constants/env"
 import { registerBackgroundFetch } from '@/components/backgroundCheck';
 //import { registerForPushNotificationsAsync } from '@/components/notifications';
 import * as Notifications from 'expo-notifications';
+import { registerForPushNotificationsAsync } from '@/components/notifications';
 
 
 
@@ -39,38 +40,22 @@ export default function ModalScreen() {
 
   var [notificationsEnabled, setNotificationsEnabled] = React.useState(false);
 
-
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState<Notifications.Notification | undefined>(
-    undefined
-  );
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
-
   async function setupnotifications() {
     const notifications = await AsyncStorage.getItem('notifications');
   
-    /*if (notifications === 'true') {
+    if (notifications === 'true') {
       console.log("setting up notifications")
-      const initBackgroundFetch = async () => {
-        await registerBackgroundFetch();
-      };
       registerForPushNotificationsAsync()
-      //  .then(token => setExpoPushToken(token ?? ''))
-      //  .catch((error: any) => setExpoPushToken(`${error}`));
-  
-      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        setNotification(notification);
-      });
-  
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log(response);
-      });
-  
-      initBackgroundFetch();
+      .then(async token => {
+        if (token !== undefined) {
+          await AsyncStorage.setItem('notificationtoken', token);
+          registerBackgroundFetch();
+        }
+      })
+      
     } else {
       console.log("notifications not enabled")
-    }*/
+    }
   }
 
 
@@ -161,8 +146,10 @@ export default function ModalScreen() {
         }
 
         if(notificationsEnabled){
-          //setupnotifications();
+          if(Platform.OS === 'android') {
+          setupnotifications();
           await registerBackgroundFetch();
+          }
         }
         Toast.show({
           type: 'success',
@@ -410,3 +397,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 });
+
+
