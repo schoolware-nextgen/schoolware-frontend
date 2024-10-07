@@ -32,6 +32,7 @@ const PuntenCard: React.FC<pointsDict> = (data) => {
     web = true
 
   return (
+    
     <Card style={styles.card}>
       <Card.Content>
         

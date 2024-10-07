@@ -2,7 +2,7 @@ import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Entypo } from '@expo/vector-icons';
 import { Link, Tabs } from 'expo-router';
-import { Pressable, View, StyleSheet } from 'react-native';
+import { Pressable, View, StyleSheet, Text } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -18,13 +18,7 @@ function TabBarIcon(props: {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
-
-
 export default function TabLayout() {
-
-
-
-
   const colorScheme = useColorScheme();
   return (
     <Tabs
@@ -36,30 +30,48 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}
       initialRouteName="agenda"
-      >
-      
+    >
+
       <Tabs.Screen
         name="points"
         options={{
           title: 'punten',
           tabBarIcon: ({ color }) => <Entypo name="bar-graph" size={24} color={color} />,
           headerRight: () => (
-            <Link href="/settings" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <View>
-                  <FontAwesome
-                    name="gear"
-                    size={25}
-                    color={Colors.dark.text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                  </View>
-                )}
-              </Pressable>
-            </Link>
+            <View style={styles.row}>
+              <Text style={{ fontSize: 18, fontWeight: 'bold', marginRight: 30, color: "white" }}>rapport</Text>
+              <Link href="/puntenSummary" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <View>
+                      <FontAwesome
+                        name="percent"
+                        size={25}
+                        color={Colors.dark.text}
+                        style={{ marginRight: 25, opacity: pressed ? 0.5 : 1 }}
+                      />
+                    </View>
+                  )}
+                </Pressable>
+              </Link>
+
+              <Link href="/settings" asChild>
+                <Pressable>
+                  {({ pressed }) => (
+                    <View>
+                      <FontAwesome
+                        name="gear"
+                        size={25}
+                        color={Colors.dark.text}
+                        style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                      />
+                    </View>
+                  )}
+                </Pressable>
+              </Link>
+            </View>
           ),
-  
+
         }}
       />
       <Tabs.Screen
@@ -72,12 +84,12 @@ export default function TabLayout() {
               <Pressable>
                 {({ pressed }) => (
                   <View>
-                  <FontAwesome
-                    name="gear"
-                    size={25}
-                    color={Colors.dark.text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
+                    <FontAwesome
+                      name="gear"
+                      size={25}
+                      color={Colors.dark.text}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
                   </View>
                 )}
               </Pressable>
@@ -95,12 +107,12 @@ export default function TabLayout() {
               <Pressable>
                 {({ pressed }) => (
                   <View>
-                  <FontAwesome
-                    name="gear"
-                    size={25}
-                    color={Colors.dark.text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
+                    <FontAwesome
+                      name="gear"
+                      size={25}
+                      color={Colors.dark.text}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
                   </View>
                 )}
               </Pressable>
@@ -108,8 +120,8 @@ export default function TabLayout() {
           ),
         }}
       />
-    
-    <Tabs.Screen
+
+      <Tabs.Screen
         name="berichten"
         options={{
           title: 'berichten',
@@ -119,12 +131,12 @@ export default function TabLayout() {
               <Pressable>
                 {({ pressed }) => (
                   <View>
-                  <FontAwesome
-                    name="gear"
-                    size={25}
-                    color={Colors.dark.text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
+                    <FontAwesome
+                      name="gear"
+                      size={25}
+                      color={Colors.dark.text}
+                      style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                    />
                   </View>
                 )}
               </Pressable>
@@ -134,7 +146,7 @@ export default function TabLayout() {
       />
 
     </Tabs>
-    
+
   );
 }
 
@@ -142,6 +154,10 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: "rgb(25, 25, 25)",
     color: "black"
-  }
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 
 })

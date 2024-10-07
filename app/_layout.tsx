@@ -18,7 +18,6 @@ export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from 'expo-router';
-import * as Notifications from 'expo-notifications';
 import { Button, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
@@ -29,14 +28,11 @@ export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
 
-
-
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { getSchoolware, pointsDict } from '@/components/schoolware';
 
 import * as FileSystem from 'expo-file-system';
-
 
 const getUniqueElements = (arr1: pointsDict[], arr2: pointsDict[]): pointsDict[] => {
   return arr1.filter(item1 => 

@@ -6,6 +6,7 @@ import { useColorScheme } from '@/components/useColorScheme.web';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, MD2Colors, Text } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -19,6 +20,12 @@ export default function puntenScreen() {
 
   const loadPunten = async () => {
     setLoading(true);
+
+    const savedOptimist = await AsyncStorage.getItem('optimist');
+    var optimist = false;
+    if(savedOptimist !== null) {
+      optimist = savedOptimist? true : false;
+    }
 
     const schoolware = await getSchoolware();
     if (!schoolware.valid) {
@@ -37,9 +44,20 @@ export default function puntenScreen() {
     }
     if (schoolware.valid) {
       //console.log("logging in")
-        schoolware.getPunten().then((res) => {setData(res); setLoading(false);});
-        
-
+        schoolware.getPunten().then((res) => {
+          if(optimist){
+            var newPoints: pointsDict[] = [];
+            res.forEach((point) => {
+              if(point.scoreFloat > 0.5){
+                newPoints.push(point)
+              }
+            });
+            setData(newPoints); setLoading(false);
+          }
+          else{
+          setData(res); setLoading(false);
+          }
+        });
     }
   }
   var web = false
@@ -52,12 +70,14 @@ export default function puntenScreen() {
 
   const renderItem = ({ item }: { item: pointsDict }) => (
     <View>
-      <PuntenCard vak={item.vak} title={item.title} comment={item.comment} scoreFloat={item.scoreFloat} scoreTotal={item.scoreTotal} dw={item.dw} date={item.date} type={item.type}></PuntenCard>
+      <PuntenCard vak={item.vak} title={item.title} comment={item.comment} scoreFloat={item.scoreFloat} scoreTotal={item.scoreTotal} dw={item.dw} date={item.date} type={item.type} gewicht={item.gewicht}></PuntenCard>
     </View>
   );
 
   return (
     <View style={styles.container}>
+      
+
       {loading ? (
         // show a loading indicator
         <View>

@@ -19,7 +19,8 @@ export type pointsDict = {
     scoreTotal: number,
     dw: string,
     date: Date,
-    type: string
+    type: string,
+    gewicht: number
 }
 
 export type agendaDict = {
@@ -35,6 +36,24 @@ export type berichtenDict = {
     titel: String,
     bericht: String,
     date: Date
+}
+
+type periodPoint = {
+    vak: String,
+    scoreFloat: number,
+    gewicht: number,
+    scoreTotal: number
+}
+
+export type periodDws = {
+    dw: String,
+    punten: periodPoint[],
+    summary: number
+}
+
+export type summaryDict = {
+    vak: String,
+    dws: periodDws[],
 }
 
 export class Schoolware {
@@ -164,7 +183,7 @@ export class Schoolware {
     async getTasks(): Promise<tasksDict[]> {
         let [response, success] = await this.checkAndRequest("main/tasks");
         let tasks = response.data;
-        if(tasks[0].title == ""){
+        if (tasks[0].title == "") {
             tasks.shift()
         }
 
@@ -179,6 +198,92 @@ export class Schoolware {
     async getBerichten(): Promise<berichtenDict[]> {
         let [response, success] = await this.checkAndRequest("main/berichten");
         return response.data;
+    }
+
+    async getSummary(): Promise<summaryDict[]> {
+        let [response, success] = await this.checkAndRequest("main/points");
+        return this.proccesSummary(response.data);
+    }
+
+    proccesSummary(pointsArray: pointsDict[]): summaryDict[] {
+        var dws: Array<String> = []
+        var vakken: Array<String> = []
+        let periods: summaryDict[] = []
+
+        let periodsFinal: summaryDict[] = []
+
+        // get DWs
+
+        //main array all vakken
+        //each vak has array of dws
+        //each dw has array of points
+
+        pointsArray.forEach(element => {
+            let dw = element.dw;
+            if (!dws.includes(dw)) {
+                dws.push(dw)
+            }
+        })
+        pointsArray.forEach(element => {
+            let vak = element.vak;
+            if (!vakken.includes(vak)) {
+                vakken.push(vak)
+            }
+        })
+
+        vakken.forEach(vak => {
+            var dwArray: periodDws[] = []
+            dws.forEach(dw => {
+                var punten: periodPoint[] = []
+                pointsArray.forEach(element => {
+                    if (element.dw == dw && element.vak == vak) {
+                        punten.push({ "vak": element.vak, "scoreFloat": element.scoreFloat, "gewicht": element.gewicht, "scoreTotal": element.scoreTotal })
+                    }
+                })
+                dwArray.push({ "dw": dw, "punten": punten, "summary": -1 })
+                
+
+            })
+            periods.push({ "vak": vak, "dws": dwArray })
+        })
+
+
+
+        periods.forEach(period => {
+            //ieder vak
+
+            let dws: periodDws[] = []
+            period.dws.forEach(dw => {
+                //ieder dw
+                var total: number = 1;
+                var teller: number = 0;
+                var noemer: number = 0;
+                dw.punten.forEach(punt => {
+                    //alle punten
+                    if (!isNaN(punt.scoreFloat)) {
+                        if (punt.gewicht === 0) {
+                            teller += punt.scoreTotal * punt.scoreFloat
+                            noemer += punt.scoreTotal
+                        }
+                        else {
+                            teller += punt.scoreTotal * punt.scoreFloat * punt.gewicht /100
+                            noemer += punt.scoreTotal * punt.gewicht /100
+                        }
+                    }
+
+                })
+                total = Math.round(teller/noemer * 100) / 100
+                //console.log(period.vak, " ", dw.dw, " ", total);
+                dws.push({ "dw": dw.dw, "summary": total, "punten": [] })
+            })
+            periodsFinal.push({"vak": period.vak, "dws": dws})
+
+
+            
+
+        })
+        return periodsFinal
+
     }
 
     filterAgenda(agenda: agendaDict[]): agendaDict[] {

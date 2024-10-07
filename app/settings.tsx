@@ -9,15 +9,7 @@ import Toast from 'react-native-toast-message';
 import { Button, Card, RadioButton, Title } from 'react-native-paper';
 import defaultBackend  from "../constants/env"
 import { registerBackgroundFetch } from '@/components/backgroundCheck';
-//import { registerForPushNotificationsAsync } from '@/components/notifications';
-import * as Notifications from 'expo-notifications';
 import { registerForPushNotificationsAsync } from '@/components/notifications';
-
-
-
-
-
-
 
 export default function ModalScreen() {
   const router = useRouter();
@@ -39,6 +31,8 @@ export default function ModalScreen() {
   const [isBackendValid, setIsBackendValid] = React.useState(true);
 
   var [notificationsEnabled, setNotificationsEnabled] = React.useState(false);
+
+  var [optimistEnabled, setOptimistEnabled] = React.useState(false);
 
   async function setupnotifications() {
     const notifications = await AsyncStorage.getItem('notifications');
@@ -117,6 +111,11 @@ export default function ModalScreen() {
   const handleNotificationChange = () => {
     setNotificationsEnabled(!notificationsEnabled);
   };
+  const handleOptimistChange = () => {
+    setOptimistEnabled(!optimistEnabled);
+  };
+
+  
 
   async function onSubmit() {
     if (username !== "" && password !== "" && domain !== "") {
@@ -138,6 +137,8 @@ export default function ModalScreen() {
         AsyncStorage.setItem('domain', domain);
         AsyncStorage.setItem('accountType', accountType);
         AsyncStorage.setItem('backend', backend);
+        AsyncStorage.setItem('optimist', optimistEnabled? 'true':'false');
+
         if(!web){
         AsyncStorage.setItem('notifications', notificationsEnabled? 'true': 'false');
         } else {
@@ -187,6 +188,7 @@ export default function ModalScreen() {
     const accountType = await AsyncStorage.getItem('accountType');
     const backend = await AsyncStorage.getItem('backend');
     const notifications = await AsyncStorage.getItem('notifications');
+    const optimist = await AsyncStorage.getItem('optimist');
 
     if (username !== null) {
       setUsername(username);
@@ -210,6 +212,10 @@ export default function ModalScreen() {
     if (backend != null) {
       setBackend(backend);
     }
+    if (optimist!== null){
+      setOptimistEnabled(optimist === 'true');
+    }
+
     setsaveDisabled(false);
   }
 
@@ -312,7 +318,17 @@ export default function ModalScreen() {
             <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange} disabled={web}>
               toggle notifications
             </Button>
+          </Card.Content>
+        </Card>
 
+        <Card style={styles.card}>
+          <Card.Content>
+            <Title style={styles.title}>optimist mode (Michee)</Title>
+            <Text style={{fontSize: 15, textAlign: "center", paddingBottom: 6}}>hides points lower than 50%</Text>
+            <Text style={styles.title}>{optimistEnabled ? "enabled" : "disabled"}</Text>
+            <Button style={styles.button} mode="contained" onPress={handleOptimistChange}>
+              toggle optimist
+            </Button>
           </Card.Content>
         </Card>
 
