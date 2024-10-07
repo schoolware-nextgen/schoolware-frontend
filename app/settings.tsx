@@ -314,8 +314,8 @@ export default function ModalScreen() {
         <Card style={styles.card}>
           <Card.Content>
             <Title style={styles.title}>notifications</Title>
-            <Text style={styles.title}>{web ? "not supported" : notificationsEnabled ? "enabled" : "disabled"}</Text>
-            <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange} disabled={web}>
+            <Text style={styles.title}>WIP</Text>
+            <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange} disabled={true}>
               toggle notifications
             </Button>
           </Card.Content>
@@ -345,6 +345,7 @@ export default function ModalScreen() {
     </ScrollView>
   );
 }
+//{web ? "not supported" : notificationsEnabled ? "enabled" : "disabled"}
 
 const styles = StyleSheet.create({
   container: {
