@@ -24,7 +24,7 @@ export default function puntenScreen() {
     const savedOptimist = await AsyncStorage.getItem('optimist');
     var optimist = false;
     if(savedOptimist !== null) {
-      optimist = savedOptimist? true : false;
+      optimist = savedOptimist === "true" ? true : false;
     }
 
     const schoolware = await getSchoolware();
@@ -46,6 +46,7 @@ export default function puntenScreen() {
       //console.log("logging in")
         schoolware.getPunten().then((res) => {
           if(optimist){
+            console.log("optimist on removing points")
             var newPoints: pointsDict[] = [];
             res.forEach((point) => {
               if(point.scoreFloat > 0.5){
