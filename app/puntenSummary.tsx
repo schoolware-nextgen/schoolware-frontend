@@ -33,7 +33,7 @@ const [openSettings, setopenSettings] = useState(false);
 
     }
     if (schoolware.valid) {
-        console.log("logging in")
+        
         schoolware.getSummary().then((res) => {setData(res); setLoading(false);});
     }
   }

@@ -27,15 +27,15 @@ export default function BerichtenScreen() {
           text1: 'No saved info found, please go to settings',
         });
       
-      //router.replace('/settings');
+      
       setLoading(false)
       setopenSettings(true)
 
     } else {
-      //console.log("Schoolware valid")
+      
     }
     if (schoolware.valid) {
-      //console.log("logging in")
+      
         schoolware.getBerichten().then((res) => {setData(res); setLoading(false);});
     }
   }

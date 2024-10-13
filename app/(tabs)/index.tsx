@@ -106,15 +106,15 @@ export default function puntenScreen() {
         text1: 'No saved info found, please go to settings',
       });
 
-      //router.replace('/settings');
+      
       setLoading(false)
       setopenSettings(true)
 
     } else {
-      //console.log("Schoolware valid")
+      
     }
     if (schoolware.valid) {
-      //console.log("logging in")
+      
       //console.log("date to schoolware: ", date)
       schoolware.getAgenda(date).then((res) => { setData(res); setLoading(false); });
 

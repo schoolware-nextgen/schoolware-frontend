@@ -35,15 +35,15 @@ export default function puntenScreen() {
           text1: 'No saved info found, please go to settings',
         });
       
-      //router.replace('/settings');
+      
       setLoading(false)
       setopenSettings(true)
 
     } else {
-      //console.log("Schoolware valid")
+      
     }
     if (schoolware.valid) {
-      //console.log("logging in")
+      
         schoolware.getPunten().then((res) => {
           if(optimist){
             console.log("optimist on removing points")

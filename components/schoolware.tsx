@@ -287,23 +287,32 @@ export class Schoolware {
     }
 
     filterAgenda(agenda: agendaDict[]): agendaDict[] {
-        if (agenda.length != 0) {
-            if (agenda[0].period != 1) {
-                for (let i = 0; i < agenda[0].period; i++) {
-                    agenda.unshift({
-                        "comment": "",
-                        "date": new Date(),
-                        "period": 1,
-                        "room": "",
-                        "title": "Geen les",
-                        "vak": ""
+        var filtedAgenda: agendaDict[] = []
 
-                    })
-                }
-            }
+        for (let i = 0; i < 8; i++) {
+            filtedAgenda.push({
+                "comment": "",
+                "date": new Date(),
+                "period": i+1,
+                "room": "",
+                "title": "Geen les",
+                "vak": ""
+            })
         }
-
-        return agenda;
+        if (agenda.length != 0) {
+            agenda.forEach((period, index) => {
+                filtedAgenda[period.period - 1] = period
+            })
+        }
+        var end = false;
+        for (let i = filtedAgenda.length-1; i >= 0; i--) {
+            if(filtedAgenda[i].vak == "" && filtedAgenda[i].room == "" && !end) {
+                filtedAgenda.splice(i, 1)
+            } else {
+                end = true;
+            }
+        } 
+        return filtedAgenda;
     }
 }
 
