@@ -140,10 +140,10 @@ export default function ModalScreen() {
         AsyncStorage.setItem('optimist', optimistEnabled? 'true':'false');
 
         if(!web){
-        AsyncStorage.setItem('notifications', notificationsEnabled? 'true': 'false');
+          AsyncStorage.setItem('notifications', notificationsEnabled? 'true': 'false');
         } else {
-          setNotificationsEnabled(false);
-          AsyncStorage.setItem('notifications', 'false');
+          setNotificationsEnabled(notificationsEnabled);
+          AsyncStorage.setItem('notifications', notificationsEnabled? 'true': 'false');
         }
 
         if(notificationsEnabled){
@@ -314,8 +314,8 @@ export default function ModalScreen() {
         <Card style={styles.card}>
           <Card.Content>
             <Title style={styles.title}>notifications</Title>
-            <Text style={styles.title}>WIP</Text>
-            <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange} disabled={true}>
+            <Text style={styles.title}>{notificationsEnabled? 'enabled' : 'disabled'}</Text>
+            <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange} disabled={web}>
               toggle notifications
             </Button>
           </Card.Content>
