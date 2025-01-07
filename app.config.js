@@ -22,7 +22,6 @@ export default {
             backgroundColor: "#ffffff"
           },
           package: "com.mb.schoolwareFrontend",
-          googleServicesFile: "google-services.json",
         },
         web: {
           bundler: "metro",

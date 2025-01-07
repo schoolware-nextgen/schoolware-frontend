@@ -246,6 +246,7 @@ export class Schoolware {
             })
             periods.push({ "vak": vak, "dws": dwArray })
         })
+        console.log(periods)
 
 
 
@@ -258,6 +259,8 @@ export class Schoolware {
                 var total: number = 1;
                 var teller: number = 0;
                 var noemer: number = 0;
+
+                var noemerTesting: number = 0;
                 dw.punten.forEach(punt => {
                     //alle punten
                     if (!isNaN(punt.scoreFloat)) {
@@ -266,12 +269,31 @@ export class Schoolware {
                             noemer += punt.scoreTotal
                         }
                         else {
+                            if(period.vak === "Lichamelijke opvoeding"){
+/*                                console.log("current: ", noemer)
+                                console.log("adding: ", punt.scoreTotal * punt.gewicht /100)
+                                console.log("new: ", noemer + punt.scoreTotal * punt.gewicht /100)*/
+                                //noemerTesting += punt.scoreTotal * punt.gewicht /100
+                                console.log("#########################")
+                                console.log("score:", punt.scoreTotal)
+                                console.log("gewicht:", punt.gewicht)
+                                console.log("after: ", punt.gewicht * punt.scoreTotal/100)
+                                if(punt.gewicht === 30){
+                                    noemerTesting+= punt.gewicht * punt.scoreTotal/100
+                                }
+                                console.log("sum 30:", noemerTesting)
+                            }
                             teller += punt.scoreTotal * punt.scoreFloat * punt.gewicht /100
                             noemer += punt.scoreTotal * punt.gewicht /100
                         }
                     }
 
                 })
+                if(period.vak === "Lichamelijke opvoeding"){
+                console.log("vak: ", period.vak)
+                console.log("teller: " , teller)
+                console.log("noemer: " , noemer)
+                }
                 total = Math.round(teller/noemer * 100) / 100
                 //console.log(period.vak, " ", dw.dw, " ", total);
                 dws.push({ "dw": dw.dw, "summary": total, "punten": [] })

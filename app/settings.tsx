@@ -8,8 +8,6 @@ import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { Button, Card, RadioButton, Title } from 'react-native-paper';
 import defaultBackend  from "../constants/env"
-import { registerBackgroundFetch } from '@/components/backgroundCheck';
-import { registerForPushNotificationsAsync } from '@/components/notifications';
 
 export default function ModalScreen() {
   const router = useRouter();
@@ -30,28 +28,9 @@ export default function ModalScreen() {
   var [backend, setBackend] = React.useState(defaultBackend);
   const [isBackendValid, setIsBackendValid] = React.useState(true);
 
-  var [notificationsEnabled, setNotificationsEnabled] = React.useState(false);
+
 
   var [optimistEnabled, setOptimistEnabled] = React.useState(false);
-
-  async function setupnotifications() {
-    const notifications = await AsyncStorage.getItem('notifications');
-  
-    if (notifications === 'true') {
-      console.log("setting up notifications")
-      registerForPushNotificationsAsync()
-      .then(async token => {
-        if (token !== undefined) {
-          await AsyncStorage.setItem('notificationtoken', token);
-          registerBackgroundFetch();
-        }
-      })
-      
-    } else {
-      console.log("notifications not enabled")
-    }
-  }
-
 
 
   var web = false
@@ -108,9 +87,6 @@ export default function ModalScreen() {
     return re.test(url);
   };
 
-  const handleNotificationChange = () => {
-    setNotificationsEnabled(!notificationsEnabled);
-  };
   const handleOptimistChange = () => {
     setOptimistEnabled(!optimistEnabled);
   };
@@ -139,19 +115,6 @@ export default function ModalScreen() {
         AsyncStorage.setItem('backend', backend);
         AsyncStorage.setItem('optimist', optimistEnabled? 'true':'false');
 
-        if(!web){
-          AsyncStorage.setItem('notifications', notificationsEnabled? 'true': 'false');
-        } else {
-          setNotificationsEnabled(notificationsEnabled);
-          AsyncStorage.setItem('notifications', notificationsEnabled? 'true': 'false');
-        }
-
-        if(notificationsEnabled){
-          if(Platform.OS === 'android') {
-          setupnotifications();
-          await registerBackgroundFetch();
-          }
-        }
         Toast.show({
           type: 'success',
           text1: 'login info saved',
@@ -206,9 +169,7 @@ export default function ModalScreen() {
       setAccountType(accountType);
       handleAccountTypeChange(accountType);
     }
-    if(notifications !==null){
-    setNotificationsEnabled(notifications === 'true');
-    }
+
     if (backend != null) {
       setBackend(backend);
     }
@@ -308,16 +269,6 @@ export default function ModalScreen() {
 
             />
             {!isBackendValid && <Text style={styles.errorText} >Invalid URL</Text>}
-          </Card.Content>
-        </Card>
-
-        <Card style={styles.card}>
-          <Card.Content>
-            <Title style={styles.title}>notifications</Title>
-            <Text style={styles.title}>{notificationsEnabled? 'enabled' : 'disabled'}</Text>
-            <Button style={styles.button} icon="bell" mode="contained" onPress={handleNotificationChange} disabled={web}>
-              toggle notifications
-            </Button>
           </Card.Content>
         </Card>
 
